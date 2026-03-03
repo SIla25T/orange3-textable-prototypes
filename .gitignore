@@ -123,3 +123,4 @@ orangecontrib/textable_prototypes/widgets/cached_childes_corpora/*
 cache/
 texts/
 tempCodeRunnerFile.python
+/.venv
