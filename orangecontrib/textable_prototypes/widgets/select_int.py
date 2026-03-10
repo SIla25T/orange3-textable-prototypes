@@ -2,6 +2,8 @@
 from Orange.widgets import widget, gui
 from Orange.widgets.utils.widgetpreview import WidgetPreview
 from Orange.widgets.settings import Setting
+from Orange.widgets.widget import Input, Output
+
 
 __version__ = "0.01"
 
