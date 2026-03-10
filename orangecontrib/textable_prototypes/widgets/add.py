@@ -1,5 +1,6 @@
 # Standard imports...
-from Orange.widgets import widget, gui, utils
+from Orange.widgets import widget, gui
+from Orange.widgets.utils.signals import Input, Output
 from Orange.widgets.utils.widgetpreview import WidgetPreview
 
 __version__ = "0.01"
@@ -19,11 +20,12 @@ class Add(widget.OWWidget):
     #----------------------------------------------------------------------
     # Channel definitions...
 
-    inputs = [
-        ("A", int, "set_A"),
-        ("B", int, "set_B"),
-    ]
-    outputs = [("Addition result", int)]
+    class Inputs:
+        A = Input("A", int)
+        B = Input("B", int)
+    
+    class Outputs:
+        result = Output("Addition result", int)
 
     #----------------------------------------------------------------------
     # GUI layout parameters...
@@ -42,24 +44,25 @@ class Add(widget.OWWidget):
 
         self.label = gui.widgetLabel(self.controlArea, "2 inputs are needed.")
 
+    @Inputs.A
     def set_A(self, a):
-        """Set the input 'A'."""
         self.a = a
 
+    @Inputs.B
     def set_B(self, b):
-        """Set the input 'B'."""
         self.b = b
+
 
     def handleNewSignals(self):
         """Reimplemented from OWWidget."""
         if self.a is not None and self.b is not None:
             result = self.a + self.b
             self.label.setText("%i + %i = %i" % (self.a, self.b, result))
-            self.send("Addition result", self.a + self.b)
+            self.Outputs.result.send(result)
         else:
             self.label.setText("2 inputs are needed.")
             # Clear the channel by sending None.
-            self.send("Addition result", None)
+            self.Outputs.result.send(None)
  
  
 # The following code lets you execute the code outside of Orange (to view the
