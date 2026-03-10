@@ -19,9 +19,9 @@ class SelectInt(widget.OWWidget):
 
     #----------------------------------------------------------------------
     # Channel definitions (NB: no input in this case)...
-
-    inputs = []
-    outputs = [("Integer", int)]
+        
+    class Outputs():
+        integer = Output("Integer", int)
 
     #----------------------------------------------------------------------
     # GUI layout parameters...
@@ -58,7 +58,11 @@ class SelectInt(widget.OWWidget):
 
     def int_changed(self):
         """Send the entered number on "Number" output"""
-        self.send("Integer", self.selected_int)
+        self.Outputs.integer.send(self.selected_int)
+        if self.selected_int :
+            self.Outputs.integer.send(self.selected_int)
+        else:
+            self.Outputs.operation_result.send(None)
 
 
 # The following code lets you execute the code outside of Orange (to view the
