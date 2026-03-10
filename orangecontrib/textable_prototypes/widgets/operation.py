@@ -2,6 +2,7 @@
 from Orange.widgets import widget, gui
 from Orange.widgets.settings import Setting
 from Orange.widgets.utils.widgetpreview import WidgetPreview
+from Orange.widgets.widget import Input, Output
 
 __version__ = "0.01"
 
@@ -19,12 +20,12 @@ class Operation(widget.OWWidget):
 
     #----------------------------------------------------------------------
     # Channel definitions...
-
-    inputs = [
-        ("A", int, "set_A"),
-        ("B", int, "set_B")
-    ]
-    outputs = [("Operation result", int)]
+    class Inputs:
+        A = Input("A", int)
+        B = Input("B", int)
+    
+    class Outputs:
+        operation_result = Output("Operation result", int)
 
     #----------------------------------------------------------------------
     # GUI layout parameters...
@@ -58,13 +59,17 @@ class Operation(widget.OWWidget):
         )
         self.label = gui.widgetLabel(self.controlArea, "2 inputs are needed.")
 
+    @Inputs.A
     def set_A(self, a):
         """Set the input 'A'."""
         self.a = a
+        self.handleNewSignals()
 
+    @Inputs.B
     def set_B(self, b):
         """Set the input 'B'."""
         self.b = b
+        self.handleNewSignals()
 
     def handleNewSignals(self):
         """Reimplemented from OWWidget."""
@@ -83,11 +88,11 @@ class Operation(widget.OWWidget):
                     result,
                 )
             )
-            self.send("Operation result", result)
+            self.Outputs.operation_result.send(result)
         else:
             self.label.setText("2 inputs are needed.")
             # Clear the channel by sending None.
-            self.send("Operation result", None)
+            self.Outputs.operation_result.send(None)
  
  
 # The following code lets you execute the code outside of Orange (to view the
