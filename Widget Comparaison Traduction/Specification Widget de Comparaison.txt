@@ -11,9 +11,10 @@ Ce widget aura pour but de comparer differentes version d'un même texte dans un
 Il peut être utiliser par toutes les personnes nécessitant d'extraire les différences entre deux textes de même nature, que se soit pour de la recherche littéraire ou pour tout autre besoin de comparaison de texte.
 
 Les widgets pouvant être acceptées en entrée seront Text Field et Text Files.
-Le widget dans sa version principale n'a pas d'output. (dans sa version optionnelle il peut se lier à un widget visualize-distribution)
+Le widget doit et ne peux avoir plus de 2 widgets en entrée.
+Le widget dans sa version principale a un output de type tableau qui retourne la comparaison entre les deux textes. (dans sa version optionnelle il peut se lier à un widget visualize-distribution).
 
-Ce widget sera utile à toute personne qui souhaite comparer deux texte de même nature simplement.
+Ce widget sera utile à toute personne qui souhaite comparer deux texte de même nature simplement. La plus value du widget sera de pouvoir effectuer une comparaison entre deux textes sans avoir à crée son propre scripte python, cela permettra donc de rendre cette fonctionnalité accessible aux personnes moins enclines à la programmation. 
 
 
 1.2 Aperçu des étapes
@@ -40,7 +41,7 @@ Ce widget sera utile à toute personne qui souhaite comparer deux texte de même
 * Orange <version>
 * Orange Textable <version>
 * Fork étudiant : `https://github.com/SIla25T/orange3-textable-prototypes.git`
-* Diff lib => peut être 
+* Diff lib (librairie intégrée à Python) => peut être 
 
 2.2 Fonctionnalités minimales
 =============================
