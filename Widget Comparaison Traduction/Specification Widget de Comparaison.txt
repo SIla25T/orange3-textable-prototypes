@@ -1,0 +1,107 @@
+################################ Spécifications widget de comparaison de traduction ################################
+
+1 Introduction
+**************
+
+1.1 But du projet
+=================
+
+Ce widget aura pour but de comparer differentes version d'un même texte dans une même langue.
+
+Il peut être utiliser par toutes les personnes nécessitant d'extraire les différences entre deux textes de même nature, que se soit pour de la recherche littéraire ou pour tout autre besoin de comparaison de texte.
+
+Les widgets pouvant être acceptées en entrée seront Text Field et Text Files.
+Le widget dans sa version principale n'a pas d'output. (dans sa version optionnelle il peut se lier à un widget visualize-distribution)
+
+Ce widget sera utile à toute personne qui souhaite comparer deux texte de même nature simplement.
+
+
+1.2 Aperçu des étapes
+=====================
+* Première version des spécifications: 17.03.2025
+* Remise des spécifications: 24.03.2025
+* Version alpha du projet: 21.04.2025
+* Version finale du projet: 26.05.2025
+
+1.3 Équipe et responsabilités
+=============================
+* Ilana Senape (ilana.senape@unil.ch)
+* Valentin Armbruster (valentin.armbruster@unil.ch)
+* Nada Waly (nada.waly@unl.ch)
+* Théo Esseiva (théo.esseiva@unil.ch)
+* Alyssa Gheza (alyssa.gheza@unil.ch)
+	
+
+2. Technique
+************
+
+2.1 Dépendances
+===============
+* Orange <version>
+* Orange Textable <version>
+* Fork étudiant : `https://github.com/SIla25T/orange3-textable-prototypes.git`
+* Diff lib => peut être 
+
+2.2 Fonctionnalités minimales
+=============================
+.. image:: images/<widget>_vm1.png
+
+* FM1 — Le widget doit pouvoir accepter deux intputs Text Files ou Text Field et refuser ce qui n'y correspond pas.
+* FM2 — Le widget doit pouvoir comparer deux textes et sortir une liste/un tableau des différences entre les textes
+* FM3 - Le widget doit pouvoir segmenter efficacement les textes pour que la comparaison soit pertinente.  
+
+2.3 Fonctionnalités principales
+===============================
+.. image:: images/<widget>_vp1.png
+.. image:: images/<widget>_vp2.png
+
+* FP1 — Le widget peut reconnaitre le type de modification qu'a subit un texte (ajout, suppression, modification)
+* FP2 — Le widget peut montrer l'endroit qui a subit une modification
+
+2.4 Fonctionnalités optionnelles
+================================
+.. image:: images/<widget>_optional.png
+
+* FO1 — Le widget pourrait être relié à une visualisation distribution qui permet de voir dans quelles partie du texte il y a le plus de modification en fonction d'une fenêtre de recherche
+* FO2 — Le widget pourrait se moduler en fonction du type de changement chercher et de son intensité
+
+2.5 Tests
+=========
+Décrire une liste de scénarios (voir capsules “Specs 3”).
+Exiger au moins :
+- 2–3 scénarios OK
+	1) Tester qu'il y a bien deux inputs
+	2) Tester que les inputs sont du bon type
+- 2 scénarios None / entrée manquante
+	1) Tester si il n'y a rien dans le fichier Text File ou Test Field => message indiquant qu'il n'y a rien
+	2) Si il n'y a pas d'input => message d'erreur
+- 1 scénario paramètre invalide
+	1) -
+
+3. Étapes
+*********
+
+3.1 Version alpha
+=================
+* L'interface graphique est construite (même minimalement).
+* Les fonctionnalités minimales sont implémentées et testables.
+* Le widget est intégrable dans Orange (install -e, visible, mini workflow).
+
+3.2 Version finale
+==================
+* Fonctionnalités principales complètes
+* Robustesse (None, erreurs, outputs vidés correctement)
+* Documentation (EN) cohérente
+* Tests / scénarios de validation exécutés
+
+4. Infrastructure
+*****************
+
+Le projet est disponible sur GitHub :
+`https://github.com/SIla25T/orange3-textable-prototypes.git`
+
+Organisation recommandée :
+- `specs/<WidgetName>.rst`
+- `doc/widgets/<WidgetName>.rst` (EN)
+- `orangecontrib/textable_prototypes/widgets/<WidgetName>.py`
+- `orangecontrib/textable_prototypes/widgets/icons/<WidgetName>.(png|svg)`
