@@ -1,5 +1,6 @@
 # Standard imports...
 from Orange.widgets import widget, gui
+from Orange.widgets.widget import Input
 from Orange.widgets.utils.widgetpreview import WidgetPreview
 
 __version__ = "0.01"
@@ -19,8 +20,8 @@ class DisplayInt(widget.OWWidget):
     #----------------------------------------------------------------------
     # Channel definitions (NB: no output in this case)...
 
-    inputs = [("Integer", int, "set_int")]
-    outputs = []
+    class Inputs:
+        integer = Input("Integer", int)
 
     #----------------------------------------------------------------------
     # GUI layout parameters...
@@ -36,6 +37,7 @@ class DisplayInt(widget.OWWidget):
 
         self.label = gui.widgetLabel(self.controlArea, "No input yet.")
 
+    @Inputs.integer
     def set_int(self, input_number):
         """Set the input integer."""
         if input_number is None:
