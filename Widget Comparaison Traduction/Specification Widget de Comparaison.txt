@@ -1,4 +1,4 @@
-################################ Spécifications widget de comparaison de traduction ################################
+################################ Spécifications widget de comparaison de texte ################################
 
 1 Introduction
 **************
@@ -27,11 +27,15 @@ Ce widget sera utile à toute personne qui souhaite comparer deux texte de même
 1.3 Équipe et responsabilités
 =============================
 * Ilana Senape (ilana.senape@unil.ch)
+	Spécialité : Documentation
 * Valentin Armbruster (valentin.armbruster@unil.ch)
+	Spécialité : Code
 * Nada Waly (nada.waly@unl.ch)
+	Spécialité : Code
 * Théo Esseiva (théo.esseiva@unil.ch)
+	Spécialité : Code 
 * Alyssa Gheza (alyssa.gheza@unil.ch)
-	
+	Spécialité : Documentation
 
 2. Technique
 ************
@@ -41,15 +45,15 @@ Ce widget sera utile à toute personne qui souhaite comparer deux texte de même
 * Orange <version>
 * Orange Textable <version>
 * Fork étudiant : `https://github.com/SIla25T/orange3-textable-prototypes.git`
-* Diff lib (librairie intégrée à Python) => peut être 
+* Diff lib (librairie intégrée à Python) 
 
 2.2 Fonctionnalités minimales
 =============================
 .. image:: images/<widget>_vm1.png
 
-* FM1 — Le widget doit pouvoir accepter deux intputs Text Files ou Text Field et refuser ce qui n'y correspond pas.
-* FM2 — Le widget doit pouvoir comparer deux textes et sortir une liste/un tableau des différences entre les textes
-* FM3 - Le widget doit pouvoir segmenter efficacement les textes pour que la comparaison soit pertinente.  
+* FM1 — Le widget doit pouvoir accepter deux inputs Text Files ou Text Field et refuser ce qui n'y correspond pas.
+* FM2 — Le widget doit pouvoir comparer deux textes et sortir une liste/un tableau des différences entre les textes.
+* FM3 - Le widget doit pouvoir segmenter efficacement les textes pour que la comparaison soit pertinente (gérer par difflib).  
 
 2.3 Fonctionnalités principales
 ===============================
@@ -73,10 +77,14 @@ Exiger au moins :
 - 2–3 scénarios OK
 	1) Tester qu'il y a bien deux inputs
 	2) Tester que les inputs sont du bon type
+	3) Tester qu'il y ait au moins une similarité entre les textes
 - 2 scénarios None / entrée manquante
-	1) Tester si il n'y a rien dans le fichier Text File ou Test Field => message indiquant qu'il n'y a rien
+	1) Tester si il n'y a rien dans le fichier Text File ou Test Field => message 
+	indiquant qu'il n'y a rien
 	2) Si il n'y a pas d'input => message d'erreur
 - 1 scénario paramètre invalide
+	1) -
+- 1 scénario erreur/exception (si pertinent)
 	1) -
 
 3. Étapes
