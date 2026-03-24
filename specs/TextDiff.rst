@@ -114,4 +114,4 @@ Organisation recommandée :
 - `specs/TextDiff.rst`
 - `doc/widgets/TextDiff.rst` (EN)
 - `orangecontrib/textable_prototypes/widgets/TextDiff.py`
-- `orangecontrib/textable_prototypes/widgets/icons/TextDiff.(png|svg)`
+- `orangecontrib/textable_prototypes/widgets/icons/Text_Diff.(png|svg)`
