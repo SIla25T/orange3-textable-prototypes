@@ -2,7 +2,6 @@
 
 1 Introduction
 **************
-!!! faire fonctionner les images  !!! 
 
 1.1 But du projet
 =================
@@ -59,7 +58,7 @@ La plus value du widget réside dans l'accessibilité de la comparaison de texte
 
 2.2 Fonctionnalités minimales
 =============================
-.. image:: images/<widget>_vm1.png ##
+.. image:: images/TextDiff_minimal.png
 
 * FM1 — Filtrage strict des entrées. Le widget ne doit s'activer que si deux sources de texte sont connectées (Text Files ou Text Field). 
 * FM2 —  Génération d'une liste/un tableau de comparaison des deux textes, indiquant les différences (ajout, suppression, modification) et leur emplacement dans le texte (gérer par difflib).
@@ -67,14 +66,15 @@ La plus value du widget réside dans l'accessibilité de la comparaison de texte
 
 2.3 Fonctionnalités principales
 ===============================
-.. image:: images/<widget>_vp1.png  ##
+.. image:: images/TextDiff_principal.png
 
 * FP1 — Identification sémantique des changements (ajout, suppression, modification)
 * FP2 — Le widget indique l'index des caractères ou du numéro de ligne impacté. 
 
 2.4 Fonctionnalités optionnelles
 ================================
-.. image:: images/<widget>_optional.png ##
+.. image:: images/TextDiff_optionnel.png
+	
 
 * FO1 — Visualisation de la densité des changements via une fenêtre de recherche.
 * FO2 — Paramétrage du seuil de similarité (ponctuation, espaces, etc.) 
