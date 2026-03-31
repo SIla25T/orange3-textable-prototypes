@@ -66,7 +66,7 @@ La plus value du widget réside dans l'accessibilité de la comparaison de texte
 
 2.3 Fonctionnalités principales
 ===============================
-.. image:: images/TextDiff_principal.png
+.. image:: images/TextDiff_principale.png
 
 * FP1 — Identification sémantique des changements (ajout, suppression, modification)
 * FP2 — Le widget indique l'index des caractères ou du numéro de ligne impacté. 
