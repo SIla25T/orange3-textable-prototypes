@@ -13,7 +13,7 @@ class TextDiff(widget.OWWidget):
     #----------------------------------------------------------------------
     # Widget's metadata...
 
-    name = "TextDiff"
+    name = "TextDiffTests"
     description = "Compare two texts"
     icon = "textdiff_widget.png"
     priority = 20
