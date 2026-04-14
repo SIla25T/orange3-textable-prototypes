@@ -1,31 +1,38 @@
 .. meta::
-   :description: Orange3 Textable Prototypes documentation, <WidgetName> widget
-   :keywords: Orange3, Textable, Prototypes, documentation, <WidgetName>, widget
+   :description: Orange3 Textable Prototypes documentation, TextDiff widget
+   :keywords: Orange3, Textable, Prototypes, documentation, TextDiff, widget
 
-.. _<WidgetName>:
+.. _TextDiff:
 
-<WidgetName>
+TextDiff
 =============
 
-.. image:: figures/<widget_screenshot>.png
+.. image:: figures/TextDiff.png
 
-One short sentence describing the widget (main goal).
+The goal of the TextDiff widget is to compare two texts of similar 
+nature and to highlight de differences between the two.
 
 Authors
 -------
-<Name Surname>, <Name Surname>
+Ilana Senape, Valentin Armbruster, Nada Waly, Théo Esseiva, Alyssa Gheza.
 
 Signals
 -------
 Inputs:
-- ``<Input 1>``
-  <Type / role in one line>
-- ``<Input 2>`` (optional)
-  ...
+- ``TextField``
+  TextField is a text type of widget, that perrmit us to import text data from keyboard input.
+  TextField provide to the widget TextDiff the text data that it has to compare.
+  TextDiff will need two TextField input to do a comparison.
+- ``TextFile``
+  TextFile is a text type of widget, that permit us to import data from raw text files and to normalise them.
+  TextFile provide to the widget TextDiff the text data that it has to compare.
+  TextDiff will need one or two TextFile to do a comparison.
 
-Outputs:
-- ``<Output 1>``
-  <Type / role in one line>
+  TextDiff can also accept one input TextField and one input TextFile to do a comparison.
+Outputs: 
+- ``DataTable``
+  The DataTable widget displays attribute-value data in a spreadsheet, what permit the user to 
+  visualy read the comparison done by TextDiff in the shape of a data table.
 
 Description
 -----------
