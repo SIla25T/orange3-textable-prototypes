@@ -64,7 +64,15 @@ Warnings
 *<warning 1>*
 Explain cause and fix.
 
+
+
 Errors
 ~~~~~~
 *<error 1>*
 Explain cause and fix.
+
+# si les inputs sont incorectes : 
+  #1 il n'y en a pas assez / trop (0/1 TextField ou 3/+) 
+   # inputs accepter = 1 textFile / 1 TextFile + 1 TextField / 2 TextField
+  #2 si ils sont du mauvais type (pas un textFile ou un TextField)
+# si les deux textes sont radicalement differents ? 
