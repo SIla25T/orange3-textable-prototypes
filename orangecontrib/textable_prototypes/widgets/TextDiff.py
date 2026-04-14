@@ -1,5 +1,7 @@
 """
 Class OWTextableTextDiff
+
+source de la fonction detectInputLanguage : widget transletto
 """
 
 __version__ = "0.0.1"
@@ -15,6 +17,7 @@ from LTTL.Input import Input
 from Orange.data import Table, Domain, StringVariable, DiscreteVariable
 from Orange.widgets import gui, settings
 from Orange.widgets.utils.widgetpreview import WidgetPreview
+from langdetect import detect
 
 from _textable.widgets.TextableUtils import (
     OWTextableBaseWidget,
@@ -54,6 +57,7 @@ class TextDiff(OWTextableBaseWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        # Initialize attributes... 
         self.inputSegmentationA = None
         self.inputSegmentationB = None
         self.outputTable = None
@@ -95,16 +99,41 @@ class TextDiff(OWTextableBaseWidget):
         self.inputSegmentationA = newInput
         self.infoBox.inputChanged()
         self.sendButton.sendIf()
+        print("input data A ok")
 
     def inputDataB(self, newInput):
         self.inputSegmentationB = newInput
         self.infoBox.inputChanged()
         self.sendButton.sendIf()
+        print("input data B ok")
 
     def clearCreatedInputs(self):
         for i in self.createdInputs:
             Segmentation.set_data(i[0].str_index, None)
         del self.createdInputs[:]
+
+    # pour détecter la langue de l'input
+    # faudrait trouver un moyen d'appliquer cette fonction à A et B
+    # soit séparément (=faire une fonction générale et une classe Inputsegmentation générale) et faire une 2ème fonction pour check si les inputs sont dans la même langue
+    # soit aux deux en même temps et comparer dans la fonction si c'est bien la même langue ou pas (-> message error : pas la même langue)
+    def detectInputLanguage(self):
+        """Auto-detect input language"""
+        #detect the language
+        text = self.inputSegmentation[0].get_content()
+        lang_detect_language = detect(text)
+        for key, value in self.available_languages_dict["GoogleTranslator"]["lang"].items():
+            if lang_detect_language == value:
+                self.detectedInputLanguage = key
+                print(f"lang_detect: {lang_detect_language}")
+                self.inputLanguageKey = self.detectedInputLanguage
+                self.inputLanguageChanged()
+                self.sendButton.settingsChanged()
+                return
+        self.infoBox.setText(
+                "Language not recognized",
+                "warning"
+            )
+        return
 
     def onDeleteWidget(self):
         self.clearCreatedInputs()
