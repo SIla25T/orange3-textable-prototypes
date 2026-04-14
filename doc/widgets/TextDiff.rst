@@ -29,6 +29,7 @@ Inputs:
   TextDiff will need one or two TextFile to do a comparison.
 
   TextDiff can also accept one input TextField and one input TextFile to do a comparison.
+
 Outputs: 
 - ``DataTable``
   The DataTable widget displays attribute-value data in a spreadsheet, what permit the user to 
