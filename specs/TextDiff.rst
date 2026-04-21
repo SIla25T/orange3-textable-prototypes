@@ -75,14 +75,12 @@ La plus value du widget réside dans l'accessibilité de la comparaison de texte
 ================================
 .. image:: images/TextDiff_optionnel.png
 	
-* FO1 — Visualisation de la densité des changements via une fenêtre de recherche.
-	  — Visulisation du pourcentage de similarité entre les textes (0% = aucunes similarités / 100% = parfaitement similaire)
+* FO1 — Visulisation du pourcentage de similarité entre les textes (0% = aucunes similarités / 100% = parfaitement similaire)
 * FO2 — Paramétrage du seuil de similarité (ponctuation, espaces, etc.) 
 
 
 2.5 Tests
 =========
-TODO 
 
 Décrire une liste de scénarios (voir capsules “Specs 3”).
 

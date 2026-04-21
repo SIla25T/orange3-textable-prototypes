@@ -9,7 +9,7 @@ TextDiff
 
 .. image:: figures/TextDiff.png
 
-The TextDiff widget compares two version of the same text —such as different translations of a single work— and highlights the differences between them.
+The TextDiff widget compares two version of the same text — such as different translations of a single work — and highlights the differences between them.
 
 Authors
 -------
@@ -21,24 +21,26 @@ Inputs:
 - ``TextField``
   TextField is a text type of widget, that perrmit us to import text data from keyboard input.
   TextField provide to the widget TextDiff the text data that it has to compare.
-  TextDiff will need two TextField input to do a comparison.
+  TextDiff needs two TextField input to do a comparison.
 - ``TextFile``
   TextFile is a text type of widget, that permit us to import data from raw text files and to normalise them.
   TextFile provide to the widget TextDiff the text data that it has to compare.
-  TextDiff will need one or two TextFile to do a comparison.
+  TextDiff needs two TextFile to do a comparison.
 
   TextDiff can also accept one input TextField and one input TextFile to do a comparison.
 
 Outputs: 
 - ``DataTable``
   The DataTable widget displays attribute-value data in a spreadsheet, what permit the user to 
-  visualy read the comparison done by TextDiff in the shape of a data table.
+  visualy see the comparison done by TextDiff in the shape of a data table.
 
 Description
 -----------
 Explain what the widget does and describe the interface section by section.
 
-This widget aims to compare two text inputs from the same source (e.g., two versions of a document) and visualize the differences between them in a data table. Text_Diff supports any language as long as the inputs are in the same language and can be used for any type of text forasmuch as they share the same type (e.g., news articles, scientific papers, etc.). It takes a text file or a text field as input and outputs a visualization of the differences. 
+This widget aims to compare two text inputs from the same source (e.g., two versions of a document) and visualize the differences between them in a data table. 
+Text_Diff supports any language as long as the inputs are in the same language and can be used for any type of text forasmuch as they share the same type (e.g., news articles, scientific papers, etc.). 
+It takes two text file or two text field (or one of each) as input and outputs a datatable visualization of the differences. 
 
 
 Basic Interface 
@@ -66,6 +68,7 @@ The **status bar** it dsplays a summary of the emitted output, showing the numbe
 - Replace: the text segments are different in both inputs (e.g., a word is replaced by another).The source segment is marked as "replace". 
 - Insert: the text segment is present in the target input but not in the source input. The source segment is marked as "insert".
 - Delete: the text segment is present in the source input but not in the target input. The source segment is marked as "delete".
+  An extra columns/line at the end show the degree of similarity between the two texts (where 0% means that there is no similarities and 100% means that the two texts have no differences at all). 
 
 The **Send** button triggers the emission of a segmentation to the output connection(s). When it is selected, the **Send automatically** checkbox disables the button and the widget attempts to automatically emit a segmentation at every modification of its interface.
 
