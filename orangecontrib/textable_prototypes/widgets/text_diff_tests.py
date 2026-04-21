@@ -16,6 +16,9 @@ from Orange.data import Table, Domain, StringVariable, DiscreteVariable
 from Orange.widgets import gui, settings
 from Orange.widgets.utils.widgetpreview import WidgetPreview
 from langdetect import detect
+import json
+import os
+import inspect
 
 from _textable.widgets.TextableUtils import (
     OWTextableBaseWidget,
@@ -49,7 +52,7 @@ class TextDiff(OWTextableBaseWidget):
         version=__version__.rsplit(".", 1)[0]
     )
 
-# Widget settings that will be saved and restored
+    # Widget settings that will be saved and restored
     selectedSegmentationType = settings.Setting("words")
     autoSend = settings.Setting(False)
 
@@ -61,6 +64,38 @@ class TextDiff(OWTextableBaseWidget):
         self.inputSegmentationB = None
         self.outputTable = None
         self.createdInputs = []
+
+        # Path to the JSON file containing available languages and translators
+        path = os.path.dirname(
+            os.path.abspath(inspect.getfile(inspect.currentframe()))
+        )
+        # Load the available languages and translators from the JSON file
+        try:
+            with open(os.path.join(path, "translate_data.json"), "r") as file:
+                self.available_languages_dict = json.load(file)
+        # Else show error message
+        except IOError:
+            print("Failed to open json file.")
+        # GUI elements for input language selection        
+        optionsBoxInput = gui.widgetBox(
+            widget=self.controlArea,
+            box=u'Input language',
+            orientation='vertical',
+            addSpace=True,
+        )
+        self.testBox1 = gui.widgetBox(
+            widget=optionsBoxInput,
+            orientation='horizontal',
+        )
+        #Générer les listes des Traducteurs et Languages à être affichés au départ
+        self.GenerateTranslatorLanguageList()
+        gui.button(
+            widget=self.testBox1,
+            master=self,
+            label=u'Detect the language',
+            callback=self.detectInputLanguage,
+            tooltip=("Auto-detect language"),
+        )
 
         # UI Components
         self.infoBox = InfoBox(widget=self.controlArea)
@@ -78,7 +113,6 @@ class TextDiff(OWTextableBaseWidget):
             orientation="vertical",
             addSpace=True,
         )
-
         gui.comboBox(
             widget=optionsBox,
             master=self,
@@ -102,18 +136,48 @@ class TextDiff(OWTextableBaseWidget):
         self.inputSegmentationA = newInput
         self.infoBox.inputChanged()
         self.sendButton.sendIf()
+        self.detectInputLanguage()
         print("input data A ok")
 
     def inputDataB(self, newInput): #méthodes d'entrée des données, appelées automatiquement par Orange quand une nouvelle donnée arrive sur les inputs du widget.
         self.inputSegmentationB = newInput
         self.infoBox.inputChanged()
         self.sendButton.sendIf()
+        self.detectInputLanguage()
         print("input data B ok")
 
     def clearCreatedInputs(self):#méthode pour nettoyer les inputs créés, en les supprimant de la segmentation.
         for i in self.createdInputs:
             Segmentation.set_data(i[0].str_index, None)
         del self.createdInputs[:]
+    
+    #---------------------------------------------
+    fonction detectInputLanguage tests
+    #---------------------------------------------
+
+    # pour détecter la langue de l'input
+    # faudrait trouver un moyen d'appliquer cette fonction à A et B
+    # soit séparément (=faire une fonction générale et une classe Inputsegmentation générale) et faire une 2ème fonction pour check si les inputs sont dans la même langue
+    # soit aux deux en même temps et comparer dans la fonction si c'est bien la même langue ou pas (-> message error : pas la même langue)
+    def detectInputLanguage(self, newInput):
+        """Auto-detect input language"""
+        text = newInput[0].get_content()
+        # fonction detect est importer depuis la libraire detectlang
+        lang_detect_language = detect(text)
+
+        for key, value in self.available_languages_dict["GoogleTranslator"]["lang"].items():
+            if lang_detect_language == value:
+                self.detectedInputLanguage = key
+                print(f"lang_detect: {lang_detect_language}")
+                self.inputLanguageKey = self.detectedInputLanguage
+                return
+        self.infoBox.setText(
+                "Language not recognized",
+                "warning"
+            )
+        return
+
+    #---------------------------------------------
 
     def onDeleteWidget(self):#méthode appelée automatiquement par Orange quand le widget est supprimé, pour nettoyer les inputs créés.
         self.clearCreatedInputs()
