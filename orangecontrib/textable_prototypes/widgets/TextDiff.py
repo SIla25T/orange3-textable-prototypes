@@ -103,13 +103,11 @@ class TextDiff(OWTextableBaseWidget):
         self.inputSegmentationA = newInput
         self.infoBox.inputChanged()
         self.sendButton.sendIf()
-        print("input data A ok")
 
     def inputDataB(self, newInput): #méthodes d'entrée des données, appelées automatiquement par Orange quand une nouvelle donnée arrive sur les inputs du widget.
         self.inputSegmentationB = newInput
         self.infoBox.inputChanged()
         self.sendButton.sendIf()
-        print("input data B ok")
 
     def clearCreatedInputs(self):#méthode pour nettoyer les inputs créés, en les supprimant de la segmentation.
         for i in self.createdInputs:
@@ -199,8 +197,8 @@ class TextDiff(OWTextableBaseWidget):
                 elif subtag == "replace":
                     max_len = max(len(sub_a), len(sub_b))
                     for i in range(max_len):
-                        a_seg = sub_a[i] if i < len(sub_a) else ""
-                        b_seg = sub_b[i] if i < len(sub_b) else ""
+                        a_seg = sub_a[i] if i < len(sub_a) else "-"
+                        b_seg = sub_b[i] if i < len(sub_b) else "-"
                         rows.append((a_seg, b_seg, "replace"))
 
             return rows
