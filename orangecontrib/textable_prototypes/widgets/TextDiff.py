@@ -15,7 +15,7 @@ import LTTL.Segmenter as Segmenter
 from LTTL.Segmentation import Segmentation
 from LTTL.Input import Input
 
-from Orange.data import Table, Domain, StringVariable, DiscreteVariable
+from Orange.data import Table, Domain, StringVariable, DiscreteVariable, ContinuousVariable
 from Orange.widgets import gui, settings
 from Orange.widgets.utils.widgetpreview import WidgetPreview
 from langdetect import detect
@@ -55,6 +55,7 @@ class TextDiff(OWTextableBaseWidget):
 # Widget settings that will be saved and restored
     selectedSegmentationType = settings.Setting("words")
     autoSend = settings.Setting(False)
+    showSimilarity = settings.Setting(False)
 
     def __init__(self, *args, **kwargs): #création de l'intérface grahique du widget.
         super().__init__(*args, **kwargs)
@@ -91,6 +92,15 @@ class TextDiff(OWTextableBaseWidget):
             sendSelectedValue=True,
             callback=self.sendButton.settingsChanged,
             tooltip="words: words\nsentences: sentences",
+        )
+
+        gui.checkBox(
+            widget=optionsBox,
+            master=self,
+            value="showSimilarity",
+            label="Show similarity score",
+            callback=self.sendButton.settingsChanged,
+            tooltip="If enabled, the widget will calculate and display a similarity score between the two texts based on their segmented content.",
         )
 
         # Build the UI
@@ -219,7 +229,7 @@ class TextDiff(OWTextableBaseWidget):
 
         return rows
 
-    def build_output_table(self, rows):#construction de la table de sortie à partir des lignes de diff.
+    def build_output_table(self, rows, similarity_score=None):
         change_var = DiscreteVariable(
             "change_type",
             values=["equal", "replace", "delete", "insert"]
@@ -232,9 +242,13 @@ class TextDiff(OWTextableBaseWidget):
             StringVariable("diff_line"),
         ]
 
+        attributes = []
+        if similarity_score is not None:
+            attributes.append(ContinuousVariable("similarity_percentage"))
+
         # Construct the Orange Domain
         domain = Domain(
-            attributes=[],
+            attributes= attributes,
             class_vars=[change_var],
             metas=metas,
         )
@@ -242,7 +256,7 @@ class TextDiff(OWTextableBaseWidget):
         y = [] # List for class variable values
         m = []# List for meta string values
 
-        for a, b, tag in rows:#pour chaque ligne de diff, on ajoute une valeur à la variable de changement (y) et une ligne de métadonnées (m) avec les segments comparés et le type de changement.
+        for a, b, tag in rows:# for each diff line, we add the corresponding class variable value
             y.append([change_var.values.index(tag)])
             m.append([
                 str(a),
@@ -250,8 +264,13 @@ class TextDiff(OWTextableBaseWidget):
                 f"[{tag}] A: {a} | B: {b}",
             ])
 
+        if similarity_score is not None:
+            # If similarity score is provided, add it as a constant attribute for all rows
+            X = np.full((len(rows), 1), similarity_score, dtype=float)
+        else:
+            X = np.empty((len(rows), 0),dtype=float)
+
         # Convert to numpy arrays (Orange requires 2D numpy arrays for tables)
-        X = np.empty((len(rows), 0))
         Y = np.array(y, dtype=float) if y else np.empty((0, 1))
         M = np.array(m, dtype=object) if m else np.empty((0, 3), dtype=object)
 
@@ -268,7 +287,7 @@ class TextDiff(OWTextableBaseWidget):
         return matcher.ratio() * 100  # Convert to percentage
     
 
-    def sendData(self):#méthode pour envoyer les données de diff, en vérifiant que les deux segmentations d'entrée sont présentes, en extrayant et segmentant les textes, en construisant les lignes de diff, en créant la table de sortie, et en gérant les exceptions éventuelles.
+    def sendData(self):# Principal method for processing the input segmentations, computing differences, and sending the output table. It handles the entire workflow from checking inputs to building the output and emitting it.
         if not self.inputSegmentationA or not self.inputSegmentationB:
             self.infoBox.setText("Widget needs 2 inputs.", "warning")
             self.send("Diff data", None)
@@ -287,6 +306,11 @@ class TextDiff(OWTextableBaseWidget):
         # Compute differences
         rows = self.build_diff_rows(seg_a, seg_b)
 
+        # Optionally calculate similarity score
+        similarity_score = None
+        if self.showSimilarity:
+            similarity_score = round(self.calculate_similarity(seg_a, seg_b), 2) 
+
         # Initialize progress bar
         progressBar = ProgressBar(self, iterations=max(len(rows), 1))
 
@@ -295,7 +319,7 @@ class TextDiff(OWTextableBaseWidget):
                 progressBar.advance()
 
             # Build output Orange Table
-            self.outputTable = self.build_output_table(rows)
+            self.outputTable = self.build_output_table(rows, similarity_score)
 
             # Compute statistics for the UI InfoBox
             nb_equal = sum(1 for _, _, tag in rows if tag == "equal")
@@ -326,7 +350,7 @@ class TextDiff(OWTextableBaseWidget):
             self.send("Diff data", None)
 
 
-if __name__ == "__main__":#code de test pour prévisualiser le widget avec des données d'exemple, en créant deux segmentations à partir de textes différents et en les envoyant au widget.
+if __name__ == "__main__":
     input1 = Input("Bonjour tout le monde.")
     input2 = Input("Bonjour tout le joli monde.")
 
