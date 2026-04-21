@@ -169,12 +169,12 @@ class TextDiff(OWTextableBaseWidget):
 
         if tag == "delete":#pareil pour delete.
             for a_seg in a_chunk:
-                rows.append((a_seg, "", "delete"))
+                rows.append((a_seg, "-", "delete"))
             return rows
 
         if tag == "insert":#pareil pour insert.
             for b_seg in b_chunk:
-                rows.append(("", b_seg, "insert"))
+                rows.append(("-", b_seg, "insert"))
             return rows
 
         if tag == "replace":#pour les segments remplacés, on utilise un SequenceMatcher secondaire pour comparer les segments concernés et créer des lignes de diff plus détaillées, en gérant les cas où les segments n'ont pas la même longueur.
@@ -189,11 +189,11 @@ class TextDiff(OWTextableBaseWidget):
 
                 elif subtag == "delete":#pareil pour delete.
                     for a_seg in sub_a:
-                        rows.append((a_seg, "", "delete"))
+                        rows.append((a_seg, "-", "delete"))
 
                 elif subtag == "insert":#pareil pour insert.
                     for b_seg in sub_b:
-                        rows.append(("", b_seg, "insert"))
+                        rows.append(("-", b_seg, "insert"))
 
                 elif subtag == "replace":
                     max_len = max(len(sub_a), len(sub_b))
