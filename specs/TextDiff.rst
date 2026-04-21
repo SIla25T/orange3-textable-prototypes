@@ -60,9 +60,9 @@ La plus value du widget réside dans l'accessibilité de la comparaison de texte
 =============================
 .. image:: images/TextDiff_minimal.png
 
-* FM1 — Filtrage strict des entrées. Le widget ne doit s'activer que si deux sources de texte sont connectées (Text Files ou Text Field). 
+* FM1 — Filtrage strict des entrées. Le widget ne doit s'activer que si deux sources de texte sont connectées (Text Field). 
 * FM2 —  Génération d'une liste/un tableau de comparaison des deux textes, indiquant les différences (ajout, suppression, modification) et leur emplacement dans le texte (gérer par difflib).
-* FM3 - Le widget doit pouvoir segmenter efficacement les textes pour que la comparaison soit pertinente (gérer par difflib).  
+* FM3 — Le widget doit pouvoir segmenter efficacement les textes pour que la comparaison soit pertinente (gérer par difflib).  
 
 2.3 Fonctionnalités principales
 ===============================
@@ -75,13 +75,12 @@ La plus value du widget réside dans l'accessibilité de la comparaison de texte
 ================================
 .. image:: images/TextDiff_optionnel.png
 	
-
-* FO1 — Visualisation de la densité des changements via une fenêtre de recherche.
+* FO1 — Visulisation du pourcentage de similarité entre les textes (0% = aucunes similarités / 100% = parfaitement similaire)
 * FO2 — Paramétrage du seuil de similarité (ponctuation, espaces, etc.) 
+
 
 2.5 Tests
 =========
-TODO 
 
 Décrire une liste de scénarios (voir capsules “Specs 3”).
 
