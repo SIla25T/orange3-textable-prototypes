@@ -7,6 +7,7 @@ __version__ = "0.0.2"
 import re
 import difflib
 import numpy as np
+from difflib import SequenceMatcher
 
 import LTTL.Segmenter as Segmenter
 from LTTL.Segmentation import Segmentation
@@ -257,6 +258,15 @@ class TextDiff(OWTextableBaseWidget):
         table = Table.from_numpy(domain, X=X, Y=Y, metas=M)
         table.name = self.captionTitle if hasattr(self, "captionTitle") else "Text Diff"
         return table
+    
+    def calculate_similarity(self, seg_a, seg_b):
+        """
+        Calculate a similarity score between two lists of segments using difflib's SequenceMatcher.
+        Returns a float between 0 and 1, where 1 means identical.
+        """
+        matcher = SequenceMatcher(None, seg_a, seg_b)
+        return matcher.ratio() * 100  # Convert to percentage
+    
 
     def sendData(self):#méthode pour envoyer les données de diff, en vérifiant que les deux segmentations d'entrée sont présentes, en extrayant et segmentant les textes, en construisant les lignes de diff, en créant la table de sortie, et en gérant les exceptions éventuelles.
         if not self.inputSegmentationA or not self.inputSegmentationB:
