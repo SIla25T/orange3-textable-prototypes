@@ -1,5 +1,7 @@
 """
 Ce widget compare deux segmentations de texte (par exemple, des mots ou des phrases) et génère une table de différences entre les deux textes. Il utilise la bibliothèque difflib pour calculer les différences et crée une table Orange avec les segments comparés et leur type de changement (égal, remplacé, supprimé, inséré). L'utilisateur peut choisir le type de segmentation à comparer (mots ou phrases) et le widget gère automatiquement l'envoi des données de sortie lorsque les entrées changent.
+
+Source de la fonction detectInputLanguage : widget transletto
 """
 
 __version__ = "0.0.2"
