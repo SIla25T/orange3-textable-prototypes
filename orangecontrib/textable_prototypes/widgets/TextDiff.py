@@ -387,3 +387,4 @@ if __name__ == "__main__":
     seg2 = Segmenter.concatenate([input2], label="B")
 
     WidgetPreview(TextDiff).run(inputDataA=seg1, inputDataB=seg2)
+    
