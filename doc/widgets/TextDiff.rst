@@ -9,8 +9,7 @@ TextDiff
 
 .. image:: figures/TextDiff.png
 
-The goal of the TextDiff widget is to compare two texts of similar 
-nature and to highlight de differences between the two.
+The TextDiff widget compares two version of the same text —such as different translations of a single work— and highlights the differences between them.
 
 Authors
 -------
@@ -56,13 +55,17 @@ in it's basic version (see :ref:`figure 1 <text_diff_fig1>`), the **Text Diff** 
 
 The **inputs** section allows the user to connect two text sources (Text Files or Text Fields) to compare. The widget will only activate if both inputs are connected. 
 
+The **segmentation** section allows the user to choose the level of segmentation for the comparison (e.g., word or sentence). The default segmentation is at the word level.
+
+The **status bar** it dsplays a summary of the emitted output, showing the number of segments emitted and the number of differences identified between the two texts. It also indicates if the widget is ready to emit an output (e.g., if both inputs are connected and contain valid data).
+
 
  The **data table** displays the the differences between the two texts, with columns for the type of difference, the source segment, the target segment, and their respective locations in the text. The comparison is based on the difflib library, which segments the texts and identifies the differences. The possible types of differences are:
 
 - Equal : the text segments are identical in both inputs.
-- Replace: the text segments are different in both inputs (e.g., a word is replaced by another).The source segment is marked as "replace" and the target segment is marked as "replace" as well.
-- Insert: the text segment is present in the target input but not in the source input. The source segment is marked as "insert" and the target segment is marked as "equal" (if it is identical to a segment in the source input) or "replace" (if it is different from all segments in the source input).
-- Delete: the text segment is present in the source input but not in the target input. The source segment is marked as "delete" and the target segment is marked as "equal" (if it is identical to a segment in the source input) or "replace" (if it is different from all segments in the source input).
+- Replace: the text segments are different in both inputs (e.g., a word is replaced by another).The source segment is marked as "replace". 
+- Insert: the text segment is present in the target input but not in the source input. The source segment is marked as "insert".
+- Delete: the text segment is present in the source input but not in the target input. The source segment is marked as "delete".
 
 The **Send** button triggers the emission of a segmentation to the output connection(s). When it is selected, the **Send automatically** checkbox disables the button and the widget attempts to automatically emit a segmentation at every modification of its interface.
 
@@ -76,41 +79,30 @@ The **info** section indicates the reasons why no output is emitted (e.g., no in
 The  **Send** button and **Send automatically**, operate in the same way as in the basic interface.
 
 
-
-Section 1 (e.g., Source)
-~~~~~~~~~~~~~~~~~~~~~~~~
-- Control A: ...
-- Control B: ...
-
-Section 2 (e.g., Options)
-~~~~~~~~~~~~~~~~~~~~~~~~~
-- ...
-
-Send / Auto-send
-~~~~~~~~~~~~~~~~
-Explain briefly how **Send** and **Send automatically** work in this widget.
-
 Messages
 --------
 Information
 ~~~~~~~~~~~
-*<main success message>*
-Explain what it means.
+* **<N> diff lines sent to output**
+  Indicates that the text comparison was successful and the results have been successfully emitted to the next widget.
 
 Warnings
 ~~~~~~~~
 *<warning 1>*
-Explain cause and fix.
-
-
+**Texts are radically different**: Occurs when the two connected texts have little to no overlap (e.g., comparing two completely unrelated books). The widget will still process the data, but the output will mostly consist of large "delete" and "insert" blocks rather than nuanced "replace" or "equal" segments.
+  *Fix:* Ensure that the texts you are comparing are indeed different versions of the same source (e.g., two translations of the same work, or two editions of a book). If you are trying to compare two completely different texts, consider using a different widget designed for that purpose.
 
 Errors
 ~~~~~~
-*<error 1>*
-Explain cause and fix.
 
-# si les inputs sont incorectes : 
-  #1 il n'y en a pas assez / trop (0/1 TextField ou 3/+) 
-   # inputs accepter = 1 textFile / 1 TextFile + 1 TextField / 2 TextField
-  #2 si ils sont du mauvais type (pas un textFile ou un TextField)
-# si les deux textes sont radicalement differents ? 
+* **Not enough inputs**
+  Occurs when less than the required number of text sources are connected. 
+  *Fix:* Ensure you have connected valid text sources. The widget typically requires two text inputs (e.g., two Text Files, two Text Fields, or a combination of both) to perform a comparison.
+
+* **Too many inputs**
+  Occurs if more than two text sources are connected to the widget. 
+  *Fix:* The Text Diff widget can only compare two texts side-by-side. Disconnect the extra inputs.
+
+* **Invalid input type**
+  Occurs when a connected widget sends data that is not recognized as text. 
+  *Fix:* Ensure you are strictly connecting widgets that output valid text data (such as **Text File** or **Text Field**).
