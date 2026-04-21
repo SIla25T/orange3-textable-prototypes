@@ -61,26 +61,17 @@ The **segmentation** section allows the user to choose the level of segmentation
 
 The **status bar** it dsplays a summary of the emitted output, showing the number of segments emitted and the number of differences identified between the two texts. It also indicates if the widget is ready to emit an output (e.g., if both inputs are connected and contain valid data).
 
+The **options** section allows the user to customize the comparison and visualization of differences. For example, the user can set a threshold for similarity between segments.
 
- The **data table** displays the the differences between the two texts, with columns for the type of difference, the source segment, the target segment, and their respective locations in the text. The comparison is based on the difflib library, which segments the texts and identifies the differences. The possible types of differences are:
+The **info** section indicates the reasons why no output is emitted (e.g., no inputs connected, empty file, etc.).
+
+The **data table** displays the the differences between the two texts, with columns for the type of difference, the source segment, the target segment, and their respective locations in the text. The comparison is based on the difflib library, which segments the texts and identifies the differences. The possible types of differences are:
 
 - Equal : the text segments are identical in both inputs.
 - Replace: the text segments are different in both inputs (e.g., a word is replaced by another).The source segment is marked as "replace". 
 - Insert: the text segment is present in the target input but not in the source input. The source segment is marked as "insert".
 - Delete: the text segment is present in the source input but not in the target input. The source segment is marked as "delete".
-  An extra columns/line at the end show the degree of similarity between the two texts (where 0% means that there is no similarities and 100% means that the two texts have no differences at all). 
-
-The **Send** button triggers the emission of a segmentation to the output connection(s). When it is selected, the **Send automatically** checkbox disables the button and the widget attempts to automatically emit a segmentation at every modification of its interface.
-
-Advanced Interface
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-The **options** section allows the user to customize the comparison and visualization of differences. For example, the user can set a threshold for similarity between segments.
-
-The **info** section indicates the reasons why no output is emitted (e.g., no inputs connected, empty file, etc.).
-
-The  **Send** button and **Send automatically**, operate in the same way as in the basic interface.
-
+  An extra (columns/line?) at the end that shows the degree of similarity between the two texts (where 0% means that there is no similarities and 100% means that the two texts have no differences at all). 
 
 Messages
 --------
