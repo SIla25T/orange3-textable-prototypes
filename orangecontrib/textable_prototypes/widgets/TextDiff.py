@@ -1,8 +1,8 @@
 """
-Class OWTextableTextDiff
+Ce widget compare deux segmentations de texte (par exemple, des mots ou des phrases) et génère une table de différences entre les deux textes. Il utilise la bibliothèque difflib pour calculer les différences et crée une table Orange avec les segments comparés et leur type de changement (égal, remplacé, supprimé, inséré). L'utilisateur peut choisir le type de segmentation à comparer (mots ou phrases) et le widget gère automatiquement l'envoi des données de sortie lorsque les entrées changent.
 """
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 
 import re
 import difflib
@@ -27,19 +27,19 @@ from _textable.widgets.TextableUtils import (
 
 
 class TextDiff(OWTextableBaseWidget):
-    """Orange3-Textable widget for comparing two texts."""
+    """Orange3-Textable widget for comparing two texts. Name : Text Diff"""
 
     name = "Text Diff"
     description = "Compare two segmentations and output their differences."
     icon = "icons/Text_Diff.png"
     priority = 38
 
-    inputs = [
+    inputs = [ #déclare la structure officielle du widget : inputs, ouputs, son interface, et les paramètres sauvegardés.
         ("Segmentation A", Segmentation, "inputDataA"),
         ("Segmentation B", Segmentation, "inputDataB"),
     ]
     outputs = [
-        ("Diff data", Table),   # <- IMPORTANT
+        ("Diff data", Table),   #output de type Table, qui sera affiché dans un Data Table.
     ]
 
     want_main_area = False
@@ -51,7 +51,7 @@ class TextDiff(OWTextableBaseWidget):
     selectedSegmentationType = settings.Setting("words")
     autoSend = settings.Setting(False)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs): #création de l'intérface grahique du widget.
         super().__init__(*args, **kwargs)
 
         self.inputSegmentationA = None
@@ -91,25 +91,25 @@ class TextDiff(OWTextableBaseWidget):
 
         self.sendButton.sendIf()
 
-    def inputDataA(self, newInput):
+    def inputDataA(self, newInput): #méthodes d'entrée des données A, appelées automatiquement par Orange quand une nouvelle donnée arrive sur les inputs du widget.
         self.inputSegmentationA = newInput
         self.infoBox.inputChanged()
         self.sendButton.sendIf()
 
-    def inputDataB(self, newInput):
+    def inputDataB(self, newInput): #méthodes d'entrée des données, appelées automatiquement par Orange quand une nouvelle donnée arrive sur les inputs du widget.
         self.inputSegmentationB = newInput
         self.infoBox.inputChanged()
         self.sendButton.sendIf()
 
-    def clearCreatedInputs(self):
+    def clearCreatedInputs(self):#méthode pour nettoyer les inputs créés, en les supprimant de la segmentation.
         for i in self.createdInputs:
             Segmentation.set_data(i[0].str_index, None)
         del self.createdInputs[:]
 
-    def onDeleteWidget(self):
+    def onDeleteWidget(self):#méthode appelée automatiquement par Orange quand le widget est supprimé, pour nettoyer les inputs créés.
         self.clearCreatedInputs()
 
-    def setCaption(self, title):
+    def setCaption(self, title):#méthode pour changer le titre du widget, en vérifiant si le titre a changé pour éviter de déclencher des recalculs inutiles.
         if "captionTitle" in dir(self):
             changed = title != self.captionTitle
             super().setCaption(title)
@@ -118,7 +118,7 @@ class TextDiff(OWTextableBaseWidget):
         else:
             super().setCaption(title)
 
-    def extract_text(self, segmentation):
+    def extract_text(self, segmentation):#méthode pour extraire le texte d'une segmentation, en concaténant les contenus de tous les segments, et en gérant les exceptions au cas où un segment ne contiendrait pas de texte.
         if not segmentation:
             return ""
 
@@ -131,7 +131,7 @@ class TextDiff(OWTextableBaseWidget):
 
         return " ".join(contents).strip()
 
-    def segment_text(self, text):
+    def segment_text(self, text):#méthode pour segmenter un texte en fonction du type de segmentation sélectionné (mots ou phrases), en utilisant des expressions régulières pour extraire les segments, et en gérant les cas où le texte serait vide ou None.
         if text is None:
             return []
 
@@ -148,39 +148,39 @@ class TextDiff(OWTextableBaseWidget):
 
         return []
 
-    def expand_opcode(self, tag, a_chunk, b_chunk):
+    def expand_opcode(self, tag, a_chunk, b_chunk):#méthode pour transformer les opcodes de difflib en lignes de diff détaillées, en gérant les différents types d'opérations (equal, delete, insert, replace) et en créant des lignes de diff pour chaque segment concerné.
         rows = []
 
-        if tag == "equal":
+        if tag == "equal":#pour les segments égaux, on crée une ligne de diff pour chaque segment correspondant dans les deux textes.
             for a_seg, b_seg in zip(a_chunk, b_chunk):
                 rows.append((a_seg, b_seg, "equal"))
             return rows
 
-        if tag == "delete":
+        if tag == "delete":#pareil pour delete.
             for a_seg in a_chunk:
                 rows.append((a_seg, "", "delete"))
             return rows
 
-        if tag == "insert":
+        if tag == "insert":#pareil pour insert.
             for b_seg in b_chunk:
                 rows.append(("", b_seg, "insert"))
             return rows
 
-        if tag == "replace":
+        if tag == "replace":#pour les segments remplacés, on utilise un SequenceMatcher secondaire pour comparer les segments concernés et créer des lignes de diff plus détaillées, en gérant les cas où les segments n'ont pas la même longueur.
             submatcher = difflib.SequenceMatcher(None, a_chunk, b_chunk)
-            for subtag, si1, si2, sj1, sj2 in submatcher.get_opcodes():
+            for subtag, si1, si2, sj1, sj2 in submatcher.get_opcodes():#
                 sub_a = a_chunk[si1:si2]
                 sub_b = b_chunk[sj1:sj2]
 
-                if subtag == "equal":
+                if subtag == "equal":#pour les segments égaux, on crée une ligne de diff pour chaque segment correspondant dans les deux textes.
                     for a_seg, b_seg in zip(sub_a, sub_b):
                         rows.append((a_seg, b_seg, "equal"))
 
-                elif subtag == "delete":
+                elif subtag == "delete":#pareil pour delete.
                     for a_seg in sub_a:
                         rows.append((a_seg, "", "delete"))
 
-                elif subtag == "insert":
+                elif subtag == "insert":#pareil pour insert.
                     for b_seg in sub_b:
                         rows.append(("", b_seg, "insert"))
 
@@ -195,7 +195,7 @@ class TextDiff(OWTextableBaseWidget):
 
         return rows
 
-    def build_diff_rows(self, seg_a, seg_b):
+    def build_diff_rows(self, seg_a, seg_b):#construction des lignes de diff à partir des segments des deux textes.
         matcher = difflib.SequenceMatcher(None, seg_a, seg_b)
         rows = []
 
@@ -206,8 +206,7 @@ class TextDiff(OWTextableBaseWidget):
 
         return rows
 
-    def build_output_table(self, rows):
-        """Create an Orange Table readable by Data Table."""
+    def build_output_table(self, rows):#construction de la table de sortie à partir des lignes de diff.
         change_var = DiscreteVariable(
             "change_type",
             values=["equal", "replace", "delete", "insert"]
@@ -228,7 +227,7 @@ class TextDiff(OWTextableBaseWidget):
         y = []
         m = []
 
-        for a, b, tag in rows:
+        for a, b, tag in rows:#pour chaque ligne de diff, on ajoute une valeur à la variable de changement (y) et une ligne de métadonnées (m) avec les segments comparés et le type de changement.
             y.append([change_var.values.index(tag)])
             m.append([
                 str(a),
@@ -244,7 +243,7 @@ class TextDiff(OWTextableBaseWidget):
         table.name = self.captionTitle if hasattr(self, "captionTitle") else "Text Diff"
         return table
 
-    def sendData(self):
+    def sendData(self):#méthode pour envoyer les données de diff, en vérifiant que les deux segmentations d'entrée sont présentes, en extrayant et segmentant les textes, en construisant les lignes de diff, en créant la table de sortie, et en gérant les exceptions éventuelles.
         if not self.inputSegmentationA or not self.inputSegmentationB:
             self.infoBox.setText("Widget needs 2 inputs.", "warning")
             self.send("Diff data", None)
@@ -293,7 +292,7 @@ class TextDiff(OWTextableBaseWidget):
             self.send("Diff data", None)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":#code de test pour prévisualiser le widget avec des données d'exemple, en créant deux segmentations à partir de textes différents et en les envoyant au widget.
     input1 = Input("Bonjour tout le monde.")
     input2 = Input("Bonjour tout le joli monde.")
 
