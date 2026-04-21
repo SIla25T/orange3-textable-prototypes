@@ -15,6 +15,7 @@ from LTTL.Input import Input
 from Orange.data import Table, Domain, StringVariable, DiscreteVariable
 from Orange.widgets import gui, settings
 from Orange.widgets.utils.widgetpreview import WidgetPreview
+from langdetect import detect
 
 from _textable.widgets.TextableUtils import (
     OWTextableBaseWidget,
@@ -48,17 +49,20 @@ class TextDiff(OWTextableBaseWidget):
         version=__version__.rsplit(".", 1)[0]
     )
 
+# Widget settings that will be saved and restored
     selectedSegmentationType = settings.Setting("words")
     autoSend = settings.Setting(False)
 
     def __init__(self, *args, **kwargs): #création de l'intérface grahique du widget.
         super().__init__(*args, **kwargs)
 
+        # Initialize attributes
         self.inputSegmentationA = None
         self.inputSegmentationB = None
         self.outputTable = None
         self.createdInputs = []
 
+        # UI Components
         self.infoBox = InfoBox(widget=self.controlArea)
         self.sendButton = SendButton(
             widget=self.controlArea,
@@ -67,6 +71,7 @@ class TextDiff(OWTextableBaseWidget):
             infoBoxAttribute="infoBox",
         )
 
+        # Options section for segmentation type
         optionsBox = gui.widgetBox(
             widget=self.controlArea,
             box="Segmentation type",
@@ -85,21 +90,25 @@ class TextDiff(OWTextableBaseWidget):
             tooltip="words: words\nsentences: sentences",
         )
 
+        # Build the UI
         gui.rubber(self.controlArea)
         self.sendButton.draw()
         self.infoBox.draw()
 
+        # Attempt to send data immediately if autoSend is enabled
         self.sendButton.sendIf()
 
     def inputDataA(self, newInput): #méthodes d'entrée des données A, appelées automatiquement par Orange quand une nouvelle donnée arrive sur les inputs du widget.
         self.inputSegmentationA = newInput
         self.infoBox.inputChanged()
         self.sendButton.sendIf()
+        print("input data A ok")
 
     def inputDataB(self, newInput): #méthodes d'entrée des données, appelées automatiquement par Orange quand une nouvelle donnée arrive sur les inputs du widget.
         self.inputSegmentationB = newInput
         self.infoBox.inputChanged()
         self.sendButton.sendIf()
+        print("input data B ok")
 
     def clearCreatedInputs(self):#méthode pour nettoyer les inputs créés, en les supprimant de la segmentation.
         for i in self.createdInputs:
@@ -138,10 +147,12 @@ class TextDiff(OWTextableBaseWidget):
         text = str(text).strip()
         if not text:
             return []
-
+        
+        # Tokenize by words (including accented characters and hyphens)
         if self.selectedSegmentationType == "words":
             return re.findall(r"\b[\wÀ-ÿ'-]+\b", text, flags=re.UNICODE)
-
+        
+        # Tokenize by sentences (splitting on punctuation followed by space)
         if self.selectedSegmentationType == "sentences":
             parts = re.split(r"(?<=[.!?])\s+", text)
             return [part.strip() for part in parts if part.strip()]
@@ -199,6 +210,7 @@ class TextDiff(OWTextableBaseWidget):
         matcher = difflib.SequenceMatcher(None, seg_a, seg_b)
         rows = []
 
+        # Iterate through the sequence of changes identified by difflib
         for tag, i1, i2, j1, j2 in matcher.get_opcodes():
             a_chunk = seg_a[i1:i2]
             b_chunk = seg_b[j1:j2]
@@ -212,20 +224,22 @@ class TextDiff(OWTextableBaseWidget):
             values=["equal", "replace", "delete", "insert"]
         )
 
+        # Define the meta attributes (strings)
         metas = [
             StringVariable("segment_A"),
             StringVariable("segment_B"),
             StringVariable("diff_line"),
         ]
 
+        # Construct the Orange Domain
         domain = Domain(
             attributes=[],
             class_vars=[change_var],
             metas=metas,
         )
 
-        y = []
-        m = []
+        y = [] # List for class variable values
+        m = []# List for meta string values
 
         for a, b, tag in rows:#pour chaque ligne de diff, on ajoute une valeur à la variable de changement (y) et une ligne de métadonnées (m) avec les segments comparés et le type de changement.
             y.append([change_var.values.index(tag)])
@@ -235,6 +249,7 @@ class TextDiff(OWTextableBaseWidget):
                 f"[{tag}] A: {a} | B: {b}",
             ])
 
+        # Convert to numpy arrays (Orange requires 2D numpy arrays for tables)
         X = np.empty((len(rows), 0))
         Y = np.array(y, dtype=float) if y else np.empty((0, 1))
         M = np.array(m, dtype=object) if m else np.empty((0, 3), dtype=object)
@@ -248,25 +263,31 @@ class TextDiff(OWTextableBaseWidget):
             self.infoBox.setText("Widget needs 2 inputs.", "warning")
             self.send("Diff data", None)
             return
-
+        
+        # Disable UI during processing
         self.controlArea.setDisabled(True)
 
+        # Extract and segment text from both inputs
         text_a = self.extract_text(self.inputSegmentationA)
         text_b = self.extract_text(self.inputSegmentationB)
 
         seg_a = self.segment_text(text_a)
         seg_b = self.segment_text(text_b)
 
+        # Compute differences
         rows = self.build_diff_rows(seg_a, seg_b)
 
+        # Initialize progress bar
         progressBar = ProgressBar(self, iterations=max(len(rows), 1))
 
         try:
             for _ in rows:
                 progressBar.advance()
 
+            # Build output Orange Table
             self.outputTable = self.build_output_table(rows)
 
+            # Compute statistics for the UI InfoBox
             nb_equal = sum(1 for _, _, tag in rows if tag == "equal")
             nb_replace = sum(1 for _, _, tag in rows if tag == "replace")
             nb_delete = sum(1 for _, _, tag in rows if tag == "delete")
@@ -280,13 +301,16 @@ class TextDiff(OWTextableBaseWidget):
             message = pluralize(message, len(rows))
             self.infoBox.setText(message)
 
+            # Finish processing
             progressBar.finish()
             self.controlArea.setDisabled(False)
 
+            # Emit the data
             self.send("Diff data", self.outputTable)
             self.sendButton.resetSettingsChangedFlag()
 
         except Exception as exc:
+            # Handle and display any errors that occur during processing
             self.infoBox.setText(f"Diff failed: {exc}", "error")
             self.controlArea.setDisabled(False)
             self.send("Diff data", None)
