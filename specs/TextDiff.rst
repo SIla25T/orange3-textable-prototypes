@@ -77,6 +77,8 @@ La plus value du widget réside dans l'accessibilité de la comparaison de texte
 	
 * FO1 — Visulisation du pourcentage de similarité entre les textes (0% = aucunes similarités / 100% = parfaitement similaire)
 * FO2 — Paramétrage du seuil de similarité (ponctuation, espaces, etc.) 
+* FO3 — Tentative de prendre en compte la ponctuation 
+* FO4 — Tentative de permettre de segmenter de differentes manières (ex: phrases, mots, lignes) ou de segmenter grace à des regex (advanced settings)
 
 
 2.5 Tests
@@ -96,7 +98,6 @@ Décrire une liste de scénarios (voir capsules “Specs 3”).
 - scénario paramètre invalide
 	1) Tentative de connecter un type de donnée non textuel (ex: Image) - Rejet de la connexion et message d'erreur "Invalid input type. Please connect a Text File or Text Field."
 	2) Tentative de connecter plus de deux sources de texte - Rejet de la connexion et message d'erreur "Too many inputs. Please connect exactly two Text Files or Text Fields."
-
 
 3. Étapes
 *********

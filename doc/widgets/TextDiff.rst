@@ -71,7 +71,7 @@ The **data table** displays the the differences between the two texts, with colu
 - Replace: the text segments are different in both inputs (e.g., a word is replaced by another).The source segment is marked as "replace". 
 - Insert: the text segment is present in the target input but not in the source input. The source segment is marked as "insert".
 - Delete: the text segment is present in the source input but not in the target input. The source segment is marked as "delete".
-  An extra (columns/line?) at the end that shows the degree of similarity between the two texts (where 0% means that there is no similarities and 100% means that the two texts have no differences at all). 
+  The first line shows the degree of similarity between the two texts (where 0% means that there is no similarities and 100% means that the two texts have no differences at all). 
 
 Messages
 --------

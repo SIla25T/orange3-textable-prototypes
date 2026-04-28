@@ -38,12 +38,14 @@ class TextDiff(OWTextableBaseWidget):
     icon = "icons/Text_Diff.png"
     priority = 38
 
-    inputs = [ #déclare la structure officielle du widget : inputs, ouputs, son interface, et les paramètres sauvegardés.
+    # Declare the official structure of the widget : inputs, outputs, its interface and the saved parameters...
+    inputs = [
         ("Segmentation A", Segmentation, "inputDataA"),
         ("Segmentation B", Segmentation, "inputDataB"),
     ]
     outputs = [
-        ("Diff data", Table),   #output de type Table, qui sera affiché dans un Data Table.
+        # Table type output, witch will be displayed in a widget Data Table.
+        ("Diff data", Table),
     ]
 
     want_main_area = False
@@ -52,21 +54,22 @@ class TextDiff(OWTextableBaseWidget):
         version=__version__.rsplit(".", 1)[0]
     )
 
-# Widget settings that will be saved and restored
+    # Widget settings that will be saved and restored...
     selectedSegmentationType = settings.Setting("words")
     autoSend = settings.Setting(False)
     showSimilarity = settings.Setting(False)
 
-    def __init__(self, *args, **kwargs): #création de l'intérface grahique du widget.
+    # Creation of the widget graphical inteface...
+    def __init__(self, *args, **kwargs): 
         super().__init__(*args, **kwargs)
 
-        # Initialize attributes
+        # Initialize attributes...
         self.inputSegmentationA = None
         self.inputSegmentationB = None
         self.outputTable = None
         self.createdInputs = []
 
-        # UI Components
+        # UI Components...
         self.infoBox = InfoBox(widget=self.controlArea)
         self.sendButton = SendButton(
             widget=self.controlArea,
@@ -75,7 +78,7 @@ class TextDiff(OWTextableBaseWidget):
             infoBoxAttribute="infoBox",
         )
 
-        # Options section for segmentation type
+        # Options section for segmentation type...
         optionsBox = gui.widgetBox(
             widget=self.controlArea,
             box="Segmentation type",
@@ -103,33 +106,45 @@ class TextDiff(OWTextableBaseWidget):
             tooltip="If enabled, the widget will calculate and display a similarity score between the two texts based on their segmented content.",
         )
 
-        # Build the UI
+        # Build the UI...
         gui.rubber(self.controlArea)
         self.sendButton.draw()
         self.infoBox.draw()
 
-        # Attempt to send data immediately if autoSend is enabled
+        # Attempt to send data immediately if autoSend is enabled.
         self.sendButton.sendIf()
 
-    def inputDataA(self, newInput): #méthodes d'entrée des données A, appelées automatiquement par Orange quand une nouvelle donnée arrive sur les inputs du widget.
+    # Method for inputs data A, automatically called by Orange when a new data arrives on the widget inputs...
+    def inputDataA(self, newInput):
+        """Method called by Orange when a new data arrives on the widget input "Segmentation A". 
+        It updates the corresponding attribute (info box, sending data if autoSend is enabled)."""
         self.inputSegmentationA = newInput
         self.infoBox.inputChanged()
         self.sendButton.sendIf()
 
-    def inputDataB(self, newInput): #méthodes d'entrée des données, appelées automatiquement par Orange quand une nouvelle donnée arrive sur les inputs du widget.
+    # Method for inputs data B, automatically called by Orange when a new data arrives on the widget inputs...
+    def inputDataB(self, newInput):
+        """Method called by Orange when a new data arrives on the widget input "Segmentation B". 
+        It updates the corresponding attribute (info box, sending data if autoSend is enabled)."""
         self.inputSegmentationB = newInput
         self.infoBox.inputChanged()
         self.sendButton.sendIf()
 
-    def clearCreatedInputs(self):#méthode pour nettoyer les inputs créés, en les supprimant de la segmentation.
+    # Method that clean the created inputs, by supressing them from the segmentation...
+    def clearCreatedInputs(self):
+        """Method to clear the created inputs, by removing them from the segmentation and 
+        clearing the list of created inputs."""
         for i in self.createdInputs:
             Segmentation.set_data(i[0].str_index, None)
         del self.createdInputs[:]
 
-    def onDeleteWidget(self):#méthode appelée automatiquement par Orange quand le widget est supprimé, pour nettoyer les inputs créés.
+    # Method called automatically by Orange when the widget is deleted to clean the created inputs.
+    def onDeleteWidget(self):
+        """Method called automatically by Orange when the widget is deleted, to clean the created inputs from the segmentation."""
         self.clearCreatedInputs()
 
-    def setCaption(self, title):#méthode pour changer le titre du widget, en vérifiant si le titre a changé pour éviter de déclencher des recalculs inutiles.
+    def setCaption(self, title):
+        """Method to change the widget title, and that checks if the title has changed (to avoid triggering any unnecessary calculations)."""
         if "captionTitle" in dir(self):
             changed = title != self.captionTitle
             super().setCaption(title)
@@ -138,7 +153,9 @@ class TextDiff(OWTextableBaseWidget):
         else:
             super().setCaption(title)
 
-    def extract_text(self, segmentation):#méthode pour extraire le texte d'une segmentation, en concaténant les contenus de tous les segments, et en gérant les exceptions au cas où un segment ne contiendrait pas de texte.
+    # Method to extract the text of a segmentation, by concatenating the contents of all segments, and handling exceptions in case a segment does not contain text...
+    def extract_text(self, segmentation):
+        """Method to extract the text from a segmentation, by concatenating the contents of all segments, and handling exceptions in case a segment does not contain text."""
         if not segmentation:
             return ""
 
@@ -150,9 +167,9 @@ class TextDiff(OWTextableBaseWidget):
                 pass
 
         return " ".join(contents).strip()
-
-    def segment_text(self, text):#méthode pour segmenter un texte en fonction du type de segmentation sélectionné (mots ou phrases), en utilisant des expressions régulières pour extraire les segments, et en gérant les cas où le texte serait vide ou None.
-        if text is None:
+    
+    # Method to segment a text based on the selected segmentation type (words or sentences), using regular expressions to extract the segments, and handling cases where the text might be empty or None.
+    def segment_text(self, text):
             return []
 
         text = str(text).strip()
