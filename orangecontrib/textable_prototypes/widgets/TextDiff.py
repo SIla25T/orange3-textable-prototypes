@@ -58,12 +58,15 @@ class TextDiff(OWTextableBaseWidget):
     selectedSegmentationType = settings.Setting("words")
     autoSend = settings.Setting(False)
     showSimilarity = settings.Setting(False)
+    # allows user to specify a custom regex for segmentation
+    useCustomRegex = settings.Setting(False)
+    customRegexString = settings.Setting(r"\w+")
 
     # Creation of the widget graphical inteface...
     def __init__(self, *args, **kwargs): 
         super().__init__(*args, **kwargs)
 
-        # Initialize attributes...
+        # Initialize attributes
         self.inputSegmentationA = None
         self.inputSegmentationB = None
         self.outputTable = None
@@ -105,6 +108,26 @@ class TextDiff(OWTextableBaseWidget):
             callback=self.sendButton.settingsChanged,
             tooltip="If enabled, the widget will calculate and display a similarity score between the two texts based on their segmented content.",
         )
+        # Option to use a custom regex for segmentation, with a line edit to input the regex pattern.
+        gui.checkBox(
+            widget=optionsBox,
+            master=self,
+            value="useCustomRegex",
+            label="Use custom Regular Expression",
+            callback=self.onRegexCheckboxChanged,
+            tooltip="Check to override standard segmentation with your own Regex.",
+        )
+        self.regexLineEdit = gui.lineEdit(
+            widget=optionsBox,
+            master=self,
+            value="customRegexString",
+            label="Regex pattern:",
+            callback=self.sendButton.settingsChanged,
+            tooltip="Enter your regular expression (e.g., \\b\\w+\\b)",
+        )
+
+        # Initialize the state of the regex line edit based on the checkbox
+        self.regexLineEdit.setEnabled(self.useCustomRegex)
 
         # Build the UI...
         gui.rubber(self.controlArea)
@@ -175,6 +198,14 @@ class TextDiff(OWTextableBaseWidget):
         text = str(text).strip()
         if not text:
             return []
+        
+        if self.useCustomRegex and self.customRegexString:
+            try:
+                # Use the user-provided regex pattern to segment the text, with Unicode support. If the regex is invalid, catch the error and display a message in the info box.
+                return re.findall(self.customRegexString, text, flags=re.UNICODE)
+            except re.error as e:
+                self.infoBox.setText(f"Invalid Regex: {e}", "error")
+                return []
         
         # Tokenize by words (including accented characters and hyphens)
         if self.selectedSegmentationType == "words":
@@ -282,8 +313,10 @@ class TextDiff(OWTextableBaseWidget):
             ])
 
         if similarity_score is not None:
-            # If similarity score is provided, add it as a constant attribute for all rows
-            X = np.full((len(rows), 1), similarity_score, dtype=float)
+            #initialize X with NaN values and then fill the similarity score for all rows (or leave as NaN)
+            X = np.full((len(rows), 1), np.nan, dtype=float)
+            if len(rows) > 0:
+                X[:, 0] = similarity_score
         else:
             X = np.empty((len(rows), 0),dtype=float)
 

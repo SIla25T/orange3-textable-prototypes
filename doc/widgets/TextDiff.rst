@@ -36,7 +36,6 @@ Outputs:
 
 Description
 -----------
-Explain what the widget does and describe the interface section by section.
 
 This widget aims to compare two text inputs from the same source (e.g., two versions of a document) and visualize the differences between them in a data table. 
 Text_Diff supports any language as long as the inputs are in the same language and can be used for any type of text forasmuch as they share the same type (e.g., news articles, scientific papers, etc.). 
