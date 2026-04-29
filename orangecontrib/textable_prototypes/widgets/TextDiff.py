@@ -137,6 +137,11 @@ class TextDiff(OWTextableBaseWidget):
         # Attempt to send data immediately if autoSend is enabled.
         self.sendButton.sendIf()
 
+    def onRegexCheckboxChanged(self):
+        """Activate, desactivate the regex field based on the state of the checkbox"""
+        self.regexLineEdit.setEnabled(self.useCustomRegex)
+        self.sendButton.settingsChanged()
+    
     # Method for inputs data A, automatically called by Orange when a new data arrives on the widget inputs...
     def inputDataA(self, newInput):
         """Method called by Orange when a new data arrives on the widget input "Segmentation A". 
