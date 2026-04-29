@@ -193,6 +193,7 @@ class TextDiff(OWTextableBaseWidget):
     
     # Method to segment a text based on the selected segmentation type (words or sentences), using regular expressions to extract the segments, and handling cases where the text might be empty or None.
     def segment_text(self, text):
+        if not text:
             return []
 
         text = str(text).strip()
