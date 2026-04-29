@@ -366,6 +366,9 @@ class TextDiff(OWTextableBaseWidget):
         similarity_score = None
         if self.showSimilarity:
             similarity_score = round(self.calculate_similarity(seg_a, seg_b), 2) 
+        if similarity_score == 0:
+            self.infoBox.setText("Widget need at least one similarity", "warning")
+            return
 
         # Initialize progress bar
         progressBar = ProgressBar(self, iterations=max(len(rows), 1))
