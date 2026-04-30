@@ -344,8 +344,12 @@ class TextDiff(OWTextableBaseWidget):
     
 
     def sendData(self):# Principal method for processing the input segmentations, computing differences, and sending the output table. It handles the entire workflow from checking inputs to building the output and emitting it.
+        if not self.inputSegmentationA and not self.inputSegmentationB: 
+            self.infoBox.setText("Waiting for inputs, check if the input is empty", "warning")
+            self.send("Diff data", None)
+            return
         if not self.inputSegmentationA or not self.inputSegmentationB:
-            self.infoBox.setText("Widget needs 2 inputs.", "warning")
+            self.infoBox.setText("Waiting for second input, check if the input is empty", "warning")
             self.send("Diff data", None)
             return
         
