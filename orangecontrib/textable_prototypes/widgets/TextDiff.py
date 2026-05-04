@@ -146,6 +146,11 @@ class TextDiff(OWTextableBaseWidget):
     def inputDataA(self, newInput):
         """Method called by Orange when a new data arrives on the widget input "Segmentation A". 
         It updates the corresponding attribute (info box, sending data if autoSend is enabled)."""
+            if not valid:
+                self.infoBox.setText(f"Segmentation A — {reason}", "error")
+                self.inputSegmentationA = None
+                self.send("Diff data", None)
+                return
         self.inputSegmentationA = newInput
         self.infoBox.inputChanged()
         self.sendButton.sendIf()
@@ -154,6 +159,11 @@ class TextDiff(OWTextableBaseWidget):
     def inputDataB(self, newInput):
         """Method called by Orange when a new data arrives on the widget input "Segmentation B". 
         It updates the corresponding attribute (info box, sending data if autoSend is enabled)."""
+        if newInput is not None:
+                self.infoBox.setText(f"Segmentation B — {reason}", "error")
+                self.inputSegmentationB = None
+                self.send("Diff data", None)
+                return
         self.inputSegmentationB = newInput
         self.infoBox.inputChanged()
         self.sendButton.sendIf()
@@ -196,6 +206,32 @@ class TextDiff(OWTextableBaseWidget):
 
         return " ".join(contents).strip()
     
+    def is_text_segmentation(self, segmentation):
+        """Method to test if a segmentation contains text content, by checking the annotations of each segment for non-text file extensions"""""
+        NON_TEXT_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".svg", ".webp", ".mp3", ".wav", ".mp4", ".avi", ".mov", ".pdf", ".docx", ".xlsx", ".pptx",}
+
+        for segment in segmentation:
+            for key, value in segment.annotations.items():
+                if isinstance(value, str):
+                    ext = value.rsplit(".", 1)[-1].lower()
+                    if ext in NON_TEXT_EXTENSIONS:
+                        return False, (
+                            f"Input contains a non-text file ({value}). "
+                        "Please connect a Text File or Text Field only."
+                    )
+            try:
+                content = segment.get_content()
+                if not isinstance(content, str):
+                   return False, (
+                    "Input contains non-text content. "
+                    "Please connect a Text File or Text Field only."
+                )
+            except Exception:
+                return False, (
+                    "Unable to read input content. "
+                    "Please connect a Text File or Text Field only."
+                )
+        return True, ""
     # Method to segment a text based on the selected segmentation type (words or sentences), using regular expressions to extract the segments, and handling cases where the text might be empty or None.
     def segment_text(self, text):
         if not text:
@@ -360,6 +396,17 @@ class TextDiff(OWTextableBaseWidget):
         text_a = self.extract_text(self.inputSegmentationA)
         text_b = self.extract_text(self.inputSegmentationB)
 
+        if not text_a.strip():
+            self.infoBox.setText("Input A is not text", "warning")
+            self.send("Diff data", None)
+            self.controlArea.setDisabled(False)
+            return
+        if not text_b.strip():
+            self.infoBox.setText("Input B is not text", "warning")
+            self.send("Diff data", None)
+            self.controlArea.setDisabled(False)
+            return
+        
         seg_a = self.segment_text(text_a)
         seg_b = self.segment_text(text_b)
 
