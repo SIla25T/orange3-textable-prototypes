@@ -19,7 +19,7 @@ Signals
 -------
 Inputs:
 - ``TextField``
-  TextField is a text type of widget, that perrmit us to import text data from keyboard input.
+  TextField is a text type of widget, that permit us to import text data from keyboard input.
   TextField provide to the widget TextDiff the text data that it has to compare.
   TextDiff needs two TextField input to do a comparison.
 - ``TextFile``
@@ -41,8 +41,7 @@ This widget aims to compare two text inputs from the same source (e.g., two vers
 Text_Diff supports any language as long as the inputs are in the same language and can be used for any type of text forasmuch as they share the same type (e.g., news articles, scientific papers, etc.). 
 It takes two text file or two text field (or one of each) as input and outputs a datatable visualization of the differences. 
 
-
-Basic Interface 
+Interface 
 ~~~~~~~~~~~~~~~~~~~~~~~~
 in it's basic version (see :ref:`figure 1 <text_diff_fig1>`), the **Text Diff** widget allows the user to compare two text inputs and visualize the differences between them in a data table.
 
@@ -54,8 +53,6 @@ in it's basic version (see :ref:`figure 1 <text_diff_fig1>`), the **Text Diff** 
     Figure 1: **Text Diff** widget (basic interface).
 
 
-The **inputs** section allows the user to connect two text sources (Text Files or Text Fields) to compare. The widget will only activate if both inputs are connected. 
-
 The **segmentation** section allows the user to choose the level of segmentation for the comparison (e.g., word or sentence). The default segmentation is at the word level.
 
 The **status bar** it dsplays a summary of the emitted output, showing the number of segments emitted and the number of differences identified between the two texts. It also indicates if the widget is ready to emit an output (e.g., if both inputs are connected and contain valid data).
@@ -64,6 +61,12 @@ The **options** section allows the user to customize the comparison and visualiz
 
 The **info** section indicates the reasons why no output is emitted (e.g., no inputs connected, empty file, etc.).
 
+Inputs
+~~~~~~~~~~~~~~~~~~~~~~~~
+The **inputs** section allows the user to connect two text sources (Text Files or Text Fields) to compare. The widget will only activate if both inputs are connected. 
+
+Output
+~~~~~~~~~~~~~~~~~~~~~~~~
 The **data table** displays the the differences between the two texts, with columns for the type of difference, the source segment, the target segment, and their respective locations in the text. The comparison is based on the difflib library, which segments the texts and identifies the differences. The possible types of differences are:
 
 - Equal : the text segments are identical in both inputs.
