@@ -149,6 +149,7 @@ class TextDiff(OWTextableBaseWidget):
         if newInput is not None:
             valid, reason = self.is_text_segmentation(newInput)
             if not valid:
+        if not valid:
                 self.infoBox.setText(f"Segmentation A — {reason}", "error")
                 self.inputSegmentationA = None
                 self.send("Diff data", None)
@@ -350,6 +351,11 @@ class TextDiff(OWTextableBaseWidget):
         attributes = []
         if similarity_score is not None:
             attributes.append(ContinuousVariable("similarity_percentage"))
+        if similarity_score == 0:
+            self.infoBox.setText("Widget needs at least one similarity", "warning")
+            self.controlArea.setDisabled(False)
+            self.send("Diff data", None)
+            return
 
         # Construct the Orange Domain
         domain = Domain(
@@ -395,11 +401,9 @@ class TextDiff(OWTextableBaseWidget):
     
 
     def sendData(self):# Principal method for processing the input segmentations, computing differences, and sending the output table. It handles the entire workflow from checking inputs to building the output and emitting it.
-        if not self.inputSegmentationA and not self.inputSegmentationB: 
             self.infoBox.setText("Waiting for inputs, check if the input is empty", "warning")
             self.send("Diff data", None)
             return
-        if not self.inputSegmentationA or not self.inputSegmentationB:
             self.infoBox.setText("Waiting for second input, check if the input is empty", "warning")
             self.send("Diff data", None)
             return
