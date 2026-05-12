@@ -43,6 +43,12 @@ It takes two text file or two text field (or one of each) as input and outputs a
 
 Inputs
 ~~~~~~~~~~~~~~~~~~~~~~~~
+.. _text_diff_fig1: 
+.. figure:: figures/TextDiff_Basic.png
+    :align: center
+    :alt: inputs of the Text Diff widget
+    Figure 1: **Text Diff** widget (inputs).
+
 The **inputs** section allows the user to connect two text sources (Text Files or Text Fields) to compare. The widget will only activate if both inputs are connected. 
 
 Interface 
@@ -54,7 +60,7 @@ in it's basic version (see :ref:`figure 1 <text_diff_fig1>`), the **Text Diff** 
     :align: center
     :alt: Basic interface of the Text Diff widget
 
-    Figure 1: **Text Diff** widget (basic interface).
+    Figure 2: **Text Diff** widget (basic interface).
 
 
 The **segmentation** section allows the user to choose the level of segmentation for the comparison (e.g., word or sentence). The default segmentation is at the word level.
@@ -67,6 +73,12 @@ The **info** section indicates the reasons why no output is emitted (e.g., no in
 
 Output
 ~~~~~~~~~~~~~~~~~~~~~~~~
+.. _text_diff_fig1: 
+.. figure:: figures/TextDiff_output.png
+    :align: center
+    :alt: Output of the Text Diff widget
+    Figure 1: **Text Diff** widget (output).
+
 The **data table** displays the the differences between the two texts, with columns for the type of difference, the source segment, the target segment, and their respective locations in the text. The comparison is based on the difflib library, which segments the texts and identifies the differences. The possible types of differences are:
 
 - Equal : the text segments are identical in both inputs.
