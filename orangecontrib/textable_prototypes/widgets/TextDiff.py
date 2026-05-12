@@ -148,7 +148,6 @@ class TextDiff(OWTextableBaseWidget):
         It updates the corresponding attribute (info box, sending data if autoSend is enabled)."""
         if newInput is not None:
             valid, reason = self.is_text_segmentation(newInput)
-            if not valid:
         if not valid:
                 self.infoBox.setText(f"Segmentation A — {reason}", "error")
                 self.inputSegmentationA = None
@@ -349,6 +348,8 @@ class TextDiff(OWTextableBaseWidget):
         ]
 
         attributes = []
+        if similarity_score is not None:
+            attributes.append(ContinuousVariable("similarity_score"))
         if similarity_score == 0:
             self.infoBox.setText("Widget needs at least one similarity", "warning")
             self.controlArea.setDisabled(False)
@@ -403,7 +404,7 @@ class TextDiff(OWTextableBaseWidget):
             self.infoBox.setText("Waiting for inputs, check if the input is empty", "warning")
             self.send("Diff data", None)
             return
-        if self.inputSegmentationA is None and self.inputSegmentationB is None:
+        if self.inputSegmentationA is None or self.inputSegmentationB is None:
             self.infoBox.setText("Waiting for second input, check if the input is empty", "warning")
             self.send("Diff data", None)
             return
@@ -436,8 +437,10 @@ class TextDiff(OWTextableBaseWidget):
         similarity_score = None
         if self.showSimilarity:
             similarity_score = round(self.calculate_similarity(seg_a, seg_b), 2) 
-        if similarity_score == 0:
-            self.infoBox.setText("Widget need at least one similarity", "warning")
+        if similarity_score is not None and similarity_score == 0:
+            self.infoBox.setText("Les deux textes sont complètement différents.", "warning")
+            self.controlArea.setDisabled(False)
+            self.send("Diff data", None)
             return
 
         # Initialize progress bar
