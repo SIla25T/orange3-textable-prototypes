@@ -349,8 +349,6 @@ class TextDiff(OWTextableBaseWidget):
         ]
 
         attributes = []
-        if similarity_score is not None:
-            attributes.append(ContinuousVariable("similarity_percentage"))
         if similarity_score == 0:
             self.infoBox.setText("Widget needs at least one similarity", "warning")
             self.controlArea.setDisabled(False)
@@ -401,9 +399,11 @@ class TextDiff(OWTextableBaseWidget):
     
 
     def sendData(self):# Principal method for processing the input segmentations, computing differences, and sending the output table. It handles the entire workflow from checking inputs to building the output and emitting it.
+        if self.inputSegmentationA is None and self.inputSegmentationB is None: 
             self.infoBox.setText("Waiting for inputs, check if the input is empty", "warning")
             self.send("Diff data", None)
             return
+        if self.inputSegmentationA is None and self.inputSegmentationB is None:
             self.infoBox.setText("Waiting for second input, check if the input is empty", "warning")
             self.send("Diff data", None)
             return
