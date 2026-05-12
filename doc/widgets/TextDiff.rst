@@ -41,6 +41,10 @@ This widget aims to compare two text inputs from the same source (e.g., two vers
 Text_Diff supports any language as long as the inputs are in the same language and can be used for any type of text forasmuch as they share the same type (e.g., news articles, scientific papers, etc.). 
 It takes two text file or two text field (or one of each) as input and outputs a datatable visualization of the differences. 
 
+Inputs
+~~~~~~~~~~~~~~~~~~~~~~~~
+The **inputs** section allows the user to connect two text sources (Text Files or Text Fields) to compare. The widget will only activate if both inputs are connected. 
+
 Interface 
 ~~~~~~~~~~~~~~~~~~~~~~~~
 in it's basic version (see :ref:`figure 1 <text_diff_fig1>`), the **Text Diff** widget allows the user to compare two text inputs and visualize the differences between them in a data table.
@@ -60,10 +64,6 @@ The **status bar** it dsplays a summary of the emitted output, showing the numbe
 The **options** section allows the user to customize the comparison and visualization of differences. For example, the user can set a threshold for similarity between segments.
 
 The **info** section indicates the reasons why no output is emitted (e.g., no inputs connected, empty file, etc.).
-
-Inputs
-~~~~~~~~~~~~~~~~~~~~~~~~
-The **inputs** section allows the user to connect two text sources (Text Files or Text Fields) to compare. The widget will only activate if both inputs are connected. 
 
 Output
 ~~~~~~~~~~~~~~~~~~~~~~~~
