@@ -211,42 +211,15 @@ class TextDiff(OWTextableBaseWidget):
         return " ".join(contents).strip()
     
     def is_text_segmentation(self, segmentation):
-        NON_TEXT_EXTENSIONS = {
-            ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".svg", ".webp",
-            ".mp3", ".wav", ".mp4", ".avi", ".mov", ".pdf", ".docx", ".xlsx", ".pptx",
-        }
-
         for segment in segmentation:
-            # Vérification par extension dans les annotations (déjà présente)
-            for key, value in segment.annotations.items():
-                if isinstance(value, str):
-                    lower = value.lower()
-                    if any(lower.endswith(ext) for ext in NON_TEXT_EXTENSIONS):
-                        return False, (
-                            f"L'entrée contient un fichier non-texte ({value}). "
-                            "Veuillez connecter uniquement un Text File ou Text Field."
-                        )
-
-            # Vérification du contenu réel du segment
             try:
                 content = segment.get_content()
-                if not isinstance(content, str):
-                    return False, (
-                        "L'entrée contient un contenu non-textuel. "
-                        "Veuillez connecter uniquement un Text File ou Text Field."
-                    )
                 if not content.strip():
-                    return False, (
-                        "L'entrée contient un segment vide. "
-                        "Veuillez connecter uniquement un Text File ou Text Field."
-                    )
+                    return False, "Input contains an empty segment."
             except Exception as e:
-                return False, (
-                    f"Impossible de lire le contenu de l'entrée ({e}). "
-                    "Veuillez connecter uniquement un Text File ou Text Field."
-                )
-
+                return False, f"Impossible to read the content ({e})."
         return True, ""
+
     # Method to segment a text based on the selected segmentation type (words or sentences), using regular expressions to extract the segments, and handling cases where the text might be empty or None.
     def segment_text(self, text):
         if not text:
@@ -430,6 +403,22 @@ class TextDiff(OWTextableBaseWidget):
         seg_a = self.segment_text(text_a)
         seg_b = self.segment_text(text_b)
 
+        if len(seg_a) == 0:
+            self.infoBox.setText("Input A has no segments after segmentation", "warning")
+            self.send("Diff data", None)
+            self.controlArea.setDisabled(False)
+            return
+        if len(seg_b) == 0:
+            self.infoBox.setText("Input B has no segments after segmentation", "warning")
+            self.send("Diff data", None)
+            self.controlArea.setDisabled(False)
+            return
+        if len(seg_a) < 2 or len(seg_b) < 2:
+            self.infoBox.setText("At least one of the inputs has less than 2 segments after segmentation, which may not provide meaningful differences.", "warning")
+            self.send("Diff data", None)
+            self.controlArea.setDisabled(False)
+            return
+
         # Compute differences
         rows = self.build_diff_rows(seg_a, seg_b)
 
@@ -438,7 +427,7 @@ class TextDiff(OWTextableBaseWidget):
         if self.showSimilarity:
             similarity_score = round(self.calculate_similarity(seg_a, seg_b), 2) 
         if similarity_score is not None and similarity_score == 0:
-            self.infoBox.setText("Les deux textes sont complètement différents.", "warning")
+            self.infoBox.setText("Both inputs are totally different", "warning")
             self.controlArea.setDisabled(False)
             self.send("Diff data", None)
             return
