@@ -148,7 +148,7 @@ class TextDiff(OWTextableBaseWidget):
         It updates the corresponding attribute (info box, sending data if autoSend is enabled)."""
         if newInput is not None:
             valid, reason = self.is_text_segmentation(newInput)
-        if not valid:
+            if not valid:
                 self.infoBox.setText(f"Segmentation A — {reason}", "error")
                 self.inputSegmentationA = None
                 self.send("Diff data", None)
