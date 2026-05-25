@@ -414,7 +414,7 @@ class TextDiff(OWTextableBaseWidget):
             self.controlArea.setDisabled(False)
             return
         if len(seg_a) < 2 or len(seg_b) < 2:
-            self.infoBox.setText("At least one of the inputs has less than 2 segments after segmentation, which may not provide meaningful differences.", "warning")
+            self.infoBox.setText("At least one of the inputs has less than 2 segments after segmentation", "warning")
             self.send("Diff data", None)
             self.controlArea.setDisabled(False)
             return
