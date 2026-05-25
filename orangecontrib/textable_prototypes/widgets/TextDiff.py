@@ -146,7 +146,9 @@ class TextDiff(OWTextableBaseWidget):
     def inputDataA(self, newInput):
         """Method called by Orange when a new data arrives on the widget input "Segmentation A". 
         It updates the corresponding attribute (info box, sending data if autoSend is enabled)."""
-        if not valid:
+        if newInput is not None:
+            valid, reason = self.is_text_segmentation(newInput)
+            if not valid:
                 self.infoBox.setText(f"Segmentation A — {reason}", "error")
                 self.inputSegmentationA = None
                 self.send("Diff data", None)
@@ -160,6 +162,8 @@ class TextDiff(OWTextableBaseWidget):
         """Method called by Orange when a new data arrives on the widget input "Segmentation B". 
         It updates the corresponding attribute (info box, sending data if autoSend is enabled)."""
         if newInput is not None:
+            valid, reason = self.is_text_segmentation(newInput)
+            if not valid:
                 self.infoBox.setText(f"Segmentation B — {reason}", "error")
                 self.inputSegmentationB = None
                 self.send("Diff data", None)
@@ -207,31 +211,15 @@ class TextDiff(OWTextableBaseWidget):
         return " ".join(contents).strip()
     
     def is_text_segmentation(self, segmentation):
-        """Method to test if a segmentation contains text content, by checking the annotations of each segment for non-text file extensions"""""
-        NON_TEXT_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".svg", ".webp", ".mp3", ".wav", ".mp4", ".avi", ".mov", ".pdf", ".docx", ".xlsx", ".pptx",}
-
         for segment in segmentation:
-            for key, value in segment.annotations.items():
-                if isinstance(value, str):
-                    ext = value.rsplit(".", 1)[-1].lower()
-                    if ext in NON_TEXT_EXTENSIONS:
-                        return False, (
-                            f"Input contains a non-text file ({value}). "
-                        "Please connect a Text File or Text Field only."
-                    )
             try:
                 content = segment.get_content()
-                if not isinstance(content, str):
-                   return False, (
-                    "Input contains non-text content. "
-                    "Please connect a Text File or Text Field only."
-                )
-            except Exception:
-                return False, (
-                    "Unable to read input content. "
-                    "Please connect a Text File or Text Field only."
-                )
+                if not content.strip():
+                    return False, "Input contains an empty segment."
+            except Exception as e:
+                return False, f"Impossible to read the content ({e})."
         return True, ""
+
     # Method to segment a text based on the selected segmentation type (words or sentences), using regular expressions to extract the segments, and handling cases where the text might be empty or None.
     def segment_text(self, text):
         if not text:
@@ -333,6 +321,8 @@ class TextDiff(OWTextableBaseWidget):
         ]
 
         attributes = []
+        if similarity_score is not None:
+            attributes.append(ContinuousVariable("similarity_score"))
         if similarity_score == 0:
             self.infoBox.setText("Widget needs at least one similarity", "warning")
             self.controlArea.setDisabled(False)
@@ -387,7 +377,7 @@ class TextDiff(OWTextableBaseWidget):
             self.infoBox.setText("Waiting for inputs, check if the input is empty", "warning")
             self.send("Diff data", None)
             return
-        if self.inputSegmentationA is None and self.inputSegmentationB is None:
+        if self.inputSegmentationA is None or self.inputSegmentationB is None:
             self.infoBox.setText("Waiting for second input, check if the input is empty", "warning")
             self.send("Diff data", None)
             return
@@ -413,6 +403,22 @@ class TextDiff(OWTextableBaseWidget):
         seg_a = self.segment_text(text_a)
         seg_b = self.segment_text(text_b)
 
+        if len(seg_a) == 0:
+            self.infoBox.setText("Input A has no segments after segmentation", "warning")
+            self.send("Diff data", None)
+            self.controlArea.setDisabled(False)
+            return
+        if len(seg_b) == 0:
+            self.infoBox.setText("Input B has no segments after segmentation", "warning")
+            self.send("Diff data", None)
+            self.controlArea.setDisabled(False)
+            return
+        if len(seg_a) < 2 or len(seg_b) < 2:
+            self.infoBox.setText("At least one of the inputs has less than 2 segments after segmentation, which may not provide meaningful differences.", "warning")
+            self.send("Diff data", None)
+            self.controlArea.setDisabled(False)
+            return
+
         # Compute differences
         rows = self.build_diff_rows(seg_a, seg_b)
 
@@ -420,8 +426,10 @@ class TextDiff(OWTextableBaseWidget):
         similarity_score = None
         if self.showSimilarity:
             similarity_score = round(self.calculate_similarity(seg_a, seg_b), 2) 
-        if similarity_score == 0:
-            self.infoBox.setText("Widget need at least one similarity", "warning")
+        if similarity_score is not None and similarity_score == 0:
+            self.infoBox.setText("Both inputs are totally different", "warning")
+            self.controlArea.setDisabled(False)
+            self.send("Diff data", None)
             return
 
         # Initialize progress bar
