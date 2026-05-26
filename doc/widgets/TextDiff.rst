@@ -7,7 +7,9 @@
 TextDiff
 =============
 
-.. image:: Text_Diff.png
+.. image::   figures/TextDiff.png
+   :align: center
+   :alt: Text Diff widget
 
 The TextDiff widget compares two versions of the same text — such as different translations of a single work — and highlights the differences.
 
@@ -49,7 +51,7 @@ It takes two text files or two text fields (or a combination of both) as input a
 Inputs
 ~~~~~~~~~~~~~~~~~~~~~~~~
 .. _text_diff_fig1: 
-.. figure:: figures/TextDiff_Basic.png
+.. figure:: figures/TextDiff_Inputs.jpeg
     :align: center
     :alt: inputs of the Text Diff widget
     Figure 1: **Text Diff** widget (inputs).
@@ -61,7 +63,7 @@ Interface
 The **Text Diff** widget allows the user to compare two text inputs and visualize the differences between them in a data table.
 
 .. _text_diff_fig2: 
-.. figure:: figures/TextDiff_Basic.png
+.. figure:: figures/TextDiff_Basic.jpeg
     :align: center
     :alt: Basic interface of the Text Diff widget
 
@@ -79,7 +81,7 @@ The **info** section details the reasons why no output is emitted (e.g., no inpu
 Output
 ~~~~~~~~~~~~~~~~~~~~~~~~
 .. _text_diff_fig3: 
-.. figure:: figures/TextDiff_output.png
+.. figure:: figures/TextDiff_output.jpeg
     :align: center
     :alt: Output of the Text Diff widget
     Figure 3: **Text Diff** widget (output).
