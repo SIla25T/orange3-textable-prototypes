@@ -13,6 +13,8 @@ TextDiff
 
 The TextDiff widget compares two versions of the same text — such as different translations of a single work — and highlights the differences.
 
+
+
 Authors
 -------
 Ilana Senape, Valentin Armbruster, Nada Waly, Théo Esseiva, Alyssa Gheza.
@@ -31,7 +33,9 @@ Inputs:
   TextFile widget imports and normalizes data from raw text files. It supplies the TextDiff widget with the text data to be compared. 
   TextDiff needs two TextFile to do a comparison.
 
-  TextDiff can accept two TextFields, two TextFiles or one of each as input to perform a comparison.
+TextDiff can accept two TextFields, two TextFiles or one of each as input to perform a comparison.
+
+
 
 Outputs: 
 
@@ -48,6 +52,8 @@ This widget aims to compare two text inputs from the same source (e.g., two vers
 Text_Diff supports any language, provided both inputs share the same language. It is compatible with any text genre (e.g., news articles, scientific papers, etc.) as long as the compared documents are of the same nature. 
 It takes two text files or two text fields (or a combination of both) as input and outputs a datatable visualization of the divergences. 
 
+
+
 Inputs
 ~~~~~~~~~~~~~~~~~~~~~~~~
 .. _text_diff_fig1: 
@@ -57,6 +63,8 @@ Inputs
     Figure 1: **Text Diff** widget (inputs).
 
 The **inputs** section allows the user to connect two text sources (Text Files or Text Fields) to compare. The widget will only activate if both inputs are connected. 
+
+
 
 Interface 
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -77,6 +85,8 @@ The **status bar** displays a summary of the emitted output, showing the number 
 The **options** section allows the user to customize the comparison and visualization of differences. For example, the user can set a similarity threshold for the segments.
 
 The **info** section details the reasons why no output is emitted (e.g., no inputs connected, empty file, etc.).
+
+
 
 Output
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -100,7 +110,7 @@ Messages
 
 Information
 ~~~~~~~~~~~
-* **<N> diff lines sent to output**
+* **<N> diff lines sent to output** 
   Indicates that the text comparison was successful and the results have been successfully emitted to the next widget.
 
 Warnings
