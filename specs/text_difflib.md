@@ -1,4 +1,4 @@
-﻿1 Introduction
+1 Introduction
 **************
 
 1.1 But du projet
@@ -156,6 +156,13 @@ Décrire une liste de scénarios (voir capsules “Specs 3”).
 	2) Tentative de connecter plus de deux sources de texte - Rejet de la connexion et message d'erreur "Too many inputs. Please connect exactly two Text Files or Text Fields."
 
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
+
+<!-- code_chunk_output -->
+
+
+
+<!-- /code_chunk_output -->
+
 
 3. Étapes
 *********
